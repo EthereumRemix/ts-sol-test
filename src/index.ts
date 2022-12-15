@@ -182,7 +182,7 @@ async function main (filePath: string, contractPath: string): Promise<string | u
       }
       return filePath
     }
-  } catch (error) {
+  } catch (error: any) {
     core.setFailed(error.message)
   }
 }
