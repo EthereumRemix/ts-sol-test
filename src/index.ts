@@ -179,8 +179,11 @@ async function main (filePath: string, contractPath: string): Promise<string | u
 
         filePath = filePath.replace('.ts', '.js')
         await fs.writeFile(filePath, testFile.outputText)
+        return filePath
+      } else if (filePath.endsWith('.js')) {
+        await fs.writeFile(filePath, testFileContent)
+        return filePath
       }
-      return filePath
     }
   } catch (error: any) {
     core.setFailed(error.message)

@@ -334,7 +334,7 @@ function main(filePath, contractPath) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 6, , 7]);
+                    _a.trys.push([0, 7, , 8]);
                     return [4 /*yield*/, fs.readFile(filePath, 'utf8')];
                 case 1:
                     testFileContent = _a.sent();
@@ -366,14 +366,19 @@ function main(filePath, contractPath) {
                     return [4 /*yield*/, fs.writeFile(filePath, testFile.outputText)];
                 case 3:
                     _a.sent();
-                    _a.label = 4;
-                case 4: return [2 /*return*/, filePath];
-                case 5: return [3 /*break*/, 7];
-                case 6:
+                    return [2 /*return*/, filePath];
+                case 4:
+                    if (!filePath.endsWith('.js')) return [3 /*break*/, 6];
+                    return [4 /*yield*/, fs.writeFile(filePath, testFileContent)];
+                case 5:
+                    _a.sent();
+                    return [2 /*return*/, filePath];
+                case 6: return [3 /*break*/, 8];
+                case 7:
                     error_1 = _a.sent();
                     core.setFailed(error_1.message);
-                    return [3 /*break*/, 7];
-                case 7: return [2 /*return*/];
+                    return [3 /*break*/, 8];
+                case 8: return [2 /*return*/];
             }
         });
     });
