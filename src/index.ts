@@ -169,13 +169,12 @@ async function main (filePath: string, contractPath: string): Promise<string | u
       throw new Error(`No describe function found in ${filePath}. Please wrap your tests in a describe function.`)
     } else {
       testFileContent = `${testFileContent.slice(0, describeIndex)}\nglobal.remixContractArtifactsPath = "${contractPath}/build-artifacts"; \n${testFileContent.slice(describeIndex)}`
-      if (hardhatImportIndex > -1) testFileContent = testFileContent.replace(hardhatEthersImportRegex, 'from \'sol-test-helper\'')
-      if (hardhatRequireIndex > -1) testFileContent = testFileContent.replace(hardhatEthersRequireRegex, 'require(\'sol-test-helper\')')
-      if (chaiImportIndex) testFileContent = testFileContent.replace(chaiImportRegex, 'from \'sol-test-helper\'')
-      if (chaiRequireIndex) testFileContent = testFileContent.replace(chaiRequireRegex, 'require(\'sol-test-helper\')')
+      if (hardhatImportIndex > -1) testFileContent = testFileContent.replace(hardhatEthersImportRegex, 'from \'@remix-project/ghaction-helper\'')
+      if (hardhatRequireIndex > -1) testFileContent = testFileContent.replace(hardhatEthersRequireRegex, 'require(\'@remix-project/ghaction-helper\')')
+      if (chaiImportIndex) testFileContent = testFileContent.replace(chaiImportRegex, 'from \'@remix-project/ghaction-helper\'')
+      if (chaiRequireIndex) testFileContent = testFileContent.replace(chaiRequireRegex, 'require(\'@remix-project/ghaction-helper\')')
       if (filePath.endsWith('.ts')) {
         const testFile = transpileScript(testFileContent)
-        console.log('testFile: ', testFile)
 
         filePath = filePath.replace('.ts', '.js')
         await fs.writeFile(filePath, testFile.outputText)
@@ -199,12 +198,12 @@ async function setupRunEnv (): Promise<void> {
   const isNPMrepo = existsSync(packageLock)
 
   if (isYarnRepo) {
-    await cli.exec('yarn', ['add', 'mocha', 'sol-test-helper', '--dev'])
+    await cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper', '--dev'])
   } else if (isNPMrepo) {
-    await cli.exec('npm', ['install', 'mocha', 'sol-test-helper', '--save-dev'])
+    await cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])
   } else {
     await cli.exec('npm', ['init', '-y'])
-    await cli.exec('npm', ['install', 'mocha', 'sol-test-helper', '--save-dev'])
+    await cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])
   }
 }
 
