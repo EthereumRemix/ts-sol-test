@@ -198,12 +198,12 @@ async function setupRunEnv (): Promise<void> {
   const isNPMrepo = existsSync(packageLock)
 
   if (isYarnRepo) {
-    await cli.exec('yarn', ['add', 'mocha', 'sol-test-helper', '--dev'])
+    await cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper', '--dev'])
   } else if (isNPMrepo) {
-    await cli.exec('npm', ['install', 'mocha', 'sol-test-helper', '--save-dev'])
+    await cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])
   } else {
     await cli.exec('npm', ['init', '-y'])
-    await cli.exec('npm', ['install', 'mocha', 'sol-test-helper', '--save-dev'])
+    await cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])
   }
 }
 
