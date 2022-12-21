@@ -125,7 +125,7 @@ async function compileContract (contractPath: string, settings: CompileSettings)
       remixCompiler.event.register('compilerLoaded', () => {
         remixCompiler.compile(compilationTargets, contractPath)
         // use setInterval to keep gh-action process alive in other for compilation to finish
-        process.stdout.write('\nCompiling')
+        process.stdout.write('\nCompiling ')
         intervalId = setInterval(() => {
           process.stdout.write('.')
         }, 1000)

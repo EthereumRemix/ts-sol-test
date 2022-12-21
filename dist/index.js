@@ -288,7 +288,7 @@ function compileContract(contractPath, settings) {
                                 remixCompiler.event.register('compilerLoaded', function () {
                                     remixCompiler.compile(compilationTargets, contractPath);
                                     // use setInterval to keep gh-action process alive in other for compilation to finish
-                                    process.stdout.write('\nCompiling');
+                                    process.stdout.write('\nCompiling ');
                                     intervalId = setInterval(function () {
                                         process.stdout.write('.');
                                     }, 1000);
