@@ -130,7 +130,8 @@ async function compileContract (contractPath: string, settings: CompileSettings)
           process.stdout.write('.')
         }, 1000)
       })
-      remixCompiler.event.register('compilationFinished', async (success: boolean, data: any, source: string) => {
+      remixCompiler.event.register('compilationFinished', async (success: boolean, data: any, source: string, args) => {
+        console.log('Compilation finished :D ', success, data, source, args)
         if (success) {
           const contractName = path.basename(contractPath, '.sol')
           const artifactsPath = `${path.dirname(contractPath)}/build-artifacts`

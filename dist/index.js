@@ -293,11 +293,12 @@ function compileContract(contractPath, settings) {
                                         process.stdout.write('.');
                                     }, 1000);
                                 });
-                                remixCompiler.event.register('compilationFinished', function (success, data, source) { return __awaiter(_this, void 0, void 0, function () {
+                                remixCompiler.event.register('compilationFinished', function (success, data, source, args) { return __awaiter(_this, void 0, void 0, function () {
                                     var contractName, artifactsPath;
                                     return __generator(this, function (_a) {
                                         switch (_a.label) {
                                             case 0:
+                                                console.log('Compilation finished :D ', success, data, source, args);
                                                 if (!success) return [3 /*break*/, 4];
                                                 contractName = path.basename(contractPath, '.sol');
                                                 artifactsPath = "".concat(path.dirname(contractPath), "/build-artifacts");
