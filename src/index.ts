@@ -21,8 +21,8 @@ async function execute () {
 
   if (!testPath) throw new Error('Test path is required')
   if (!contractPath) throw new Error('Contract path is required')
-  contractPath = path.resolve(contractPath)
-  testPath = path.resolve(testPath)
+  // contractPath = path.resolve(contractPath)
+  // testPath = path.resolve(testPath)
   const compilerVersion = core.getInput('compiler-version')
   const isTestPathDirectory = (await fs.stat(testPath)).isDirectory()
   const isContractPathDirectory = (await fs.stat(contractPath)).isDirectory()
@@ -130,8 +130,7 @@ async function compileContract (contractPath: string, settings: CompileSettings)
           process.stdout.write('.')
         }, 1000)
       })
-      remixCompiler.event.register('compilationFinished', async (success: boolean, data: any, source: string, args) => {
-        console.log('Compilation finished :D ', success, data, source, args)
+      remixCompiler.event.register('compilationFinished', async (success: boolean, data: any, source: string) => {
         if (success) {
           const contractName = path.basename(contractPath, '.sol')
           const artifactsPath = `${path.dirname(contractPath)}/build-artifacts`
