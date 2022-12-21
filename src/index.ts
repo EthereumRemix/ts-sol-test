@@ -21,8 +21,8 @@ async function execute () {
 
   if (!testPath) throw new Error('Test path is required')
   if (!contractPath) throw new Error('Contract path is required')
-  // contractPath = path.resolve(contractPath)
-  // testPath = path.resolve(testPath)
+  contractPath = path.resolve(contractPath)
+  testPath = path.resolve(testPath)
   const compilerVersion = core.getInput('compiler-version')
   const isTestPathDirectory = (await fs.stat(testPath)).isDirectory()
   const isContractPathDirectory = (await fs.stat(contractPath)).isDirectory()
@@ -198,12 +198,12 @@ async function setupRunEnv (): Promise<void> {
   const isNPMrepo = existsSync(packageLock)
 
   if (isYarnRepo) {
-    await cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper', '--dev'])
+    await cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper', '@openzeppelin/contracts', '--dev'])
   } else if (isNPMrepo) {
-    await cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])
+    await cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '@openzeppelin/contracts', '--save-dev'])
   } else {
     await cli.exec('npm', ['init', '-y'])
-    await cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])
+    await cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '@openzeppelin/contracts', '--save-dev'])
   }
 }
 

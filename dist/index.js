@@ -293,12 +293,11 @@ function compileContract(contractPath, settings) {
                                         process.stdout.write('.');
                                     }, 1000);
                                 });
-                                remixCompiler.event.register('compilationFinished', function (success, data, source, args) { return __awaiter(_this, void 0, void 0, function () {
+                                remixCompiler.event.register('compilationFinished', function (success, data, source) { return __awaiter(_this, void 0, void 0, function () {
                                     var contractName, artifactsPath;
                                     return __generator(this, function (_a) {
                                         switch (_a.label) {
                                             case 0:
-                                                console.log('Compilation finished :D ', success, data, source, args);
                                                 if (!success) return [3 /*break*/, 4];
                                                 contractName = path.basename(contractPath, '.sol');
                                                 artifactsPath = "".concat(path.dirname(contractPath), "/build-artifacts");
@@ -398,20 +397,20 @@ function setupRunEnv() {
                     packageLock = path.join(workingDirectory, 'package-lock.json');
                     isNPMrepo = (0, fs_1.existsSync)(packageLock);
                     if (!isYarnRepo) return [3 /*break*/, 3];
-                    return [4 /*yield*/, cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper', '--dev'])];
+                    return [4 /*yield*/, cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper', '@openzeppelin/contracts', '--dev'])];
                 case 2:
                     _a.sent();
                     return [3 /*break*/, 8];
                 case 3:
                     if (!isNPMrepo) return [3 /*break*/, 5];
-                    return [4 /*yield*/, cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '@openzeppelin/contracts', '--save-dev'])];
                 case 4:
                     _a.sent();
                     return [3 /*break*/, 8];
                 case 5: return [4 /*yield*/, cli.exec('npm', ['init', '-y'])];
                 case 6:
                     _a.sent();
-                    return [4 /*yield*/, cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '@openzeppelin/contracts', '--save-dev'])];
                 case 7:
                     _a.sent();
                     _a.label = 8;
