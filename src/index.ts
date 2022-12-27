@@ -115,6 +115,10 @@ async function compileContract (contractPath: string, settings: CompileSettings)
     }
   })
   const compilerList = await axios.get('https://raw.githubusercontent.com/ethereum/solc-bin/gh-pages/bin/list.json')
+  console.log('before resolving dependency')
+  const resolveDependecy = axios.get('https://unpkg.com/@openzeppelin/contracts@4.8.0/proxy/ERC1967/ERC1967Upgrade.sol', { transformResponse: [] })
+
+  console.log('resolveDependecy: ', resolveDependecy)
   const releases = compilerList.data.releases
 
   if (releases[settings.version]) {
