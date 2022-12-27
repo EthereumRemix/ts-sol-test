@@ -282,7 +282,7 @@ function compileContract(contractPath, settings) {
                 case 2:
                     compilerList = _b.sent();
                     console.log('before resolving dependency');
-                    return [4 /*yield*/, axios_1.default.get('https://unpkg.com/@openzeppelin/contracts@4.8.0/proxy/ERC1967/ERC1967Upgrade.sol', { transformResponse: [] })];
+                    return [4 /*yield*/, axios_1.default.get('https://unpkg.com/@openzeppelin/contracts@4.8.0/proxy/ERC1967/ERC1967Upgrade.sol')];
                 case 3:
                     resolveDependecy = _b.sent();
                     console.log('resolveDependecy: ', resolveDependecy);
