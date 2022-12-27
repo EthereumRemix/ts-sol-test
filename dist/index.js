@@ -234,7 +234,7 @@ function execute() {
 // Compile single smart contract
 function compileContract(contractPath, settings) {
     return __awaiter(this, void 0, void 0, function () {
-        var contract, compilationTargets, remixCompiler, compilerList, resolveDependecy, releases, compilerUrl_1;
+        var contract, compilationTargets, remixCompiler, compilerList, releases, compilerUrl_1;
         var _a;
         var _this = this;
         return __generator(this, function (_b) {
@@ -282,10 +282,11 @@ function compileContract(contractPath, settings) {
                 case 2:
                     compilerList = _b.sent();
                     console.log('before resolving dependency');
-                    return [4 /*yield*/, axios_1.default.get('https://unpkg.com/@openzeppelin/contracts@4.8.0/proxy/ERC1967/ERC1967Upgrade.sol')];
-                case 3:
-                    resolveDependecy = _b.sent();
-                    console.log('resolveDependecy: ', resolveDependecy);
+                    axios_1.default.get('https://unpkg.com/@openzeppelin/contracts@4.8.0/proxy/ERC1967/ERC1967Upgrade.sol').then(function (res) {
+                        console.log('res: ', res);
+                    }).catch(function (e) {
+                        console.log('e: ', e);
+                    });
                     releases = compilerList.data.releases;
                     if (releases[settings.version]) {
                         compilerUrl_1 = releases[settings.version].replace('soljson-', '').replace('.js', '');
