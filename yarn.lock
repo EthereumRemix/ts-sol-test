@@ -30,9 +30,9 @@
   integrity sha512-d+RwPlMp+2qmBfeLYPLXuSRykDIFEwdTA0MMxzS9kh4kvP1ftrc/9fzy6pX6qAjthdXruHQ6/6kjT/DNo5ALuw==
 
 "@babel/runtime@^7.8.3":
-  version "7.20.6"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.20.6.tgz#facf4879bfed9b5326326273a64220f099b0fce3"
-  integrity sha512-Q+8MqP7TiHMWzSfwiJwXCjyf4GYA4Dgw3emg/7xmwsdLJOZUp+nMqcOwOzzYheuM1rhDu8FSj2l0aoMygEuXuA==
+  version "7.20.7"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.20.7.tgz#fcb41a5a70550e04a7b708037c7c32f7f356d8fd"
+  integrity sha512-UF0tvkUtxwAgZ5W/KrkHf0Rn0fdnLDU9ScxBrEVNUprE/MzirjK4MJUX1/BVDv00Sv8cljtukVK1aky++X1SjQ==
   dependencies:
     regenerator-runtime "^0.13.11"
 
@@ -519,10 +519,10 @@
     web3 "^1.5.1"
     webworkify-webpack "^2.1.5"
 
-"@remix-project/remix-url-resolver@0.0.4-3.beta.0":
-  version "0.0.4-3.beta.0"
-  resolved "https://registry.yarnpkg.com/@remix-project/remix-url-resolver/-/remix-url-resolver-0.0.4-3.beta.0.tgz#d85cdd196a03e5e3575ed7af08cdb887ab4fdf81"
-  integrity sha512-1RIYe1TBym1laFb1KWSQiQBdD9f+I+oBC8kXX6k0jFem0jBtl6Pv5T9OYsifliTAVMomlr+L+ZjgN8z4bQyZAQ==
+"@remix-project/remix-url-resolver@0.0.4-3.beta.1":
+  version "0.0.4-3.beta.1"
+  resolved "https://registry.yarnpkg.com/@remix-project/remix-url-resolver/-/remix-url-resolver-0.0.4-3.beta.1.tgz#d6f476d2b53afdbfec9d85771cdf7359d0e189e3"
+  integrity sha512-Z09JRP17EFAW72Lkmj9PWGkG9MmbjuLcodq6uo7KlsZHopQWJqji+NuBpMqffIyEv4BDcWrxyQMy/l0UzEQ1Nw==
   dependencies:
     "@erebos/bzz-node" "^0.13.0"
     axios "1.2.0"
