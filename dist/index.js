@@ -281,12 +281,6 @@ function compileContract(contractPath, settings) {
                     return [4 /*yield*/, axios_1.default.get('https://raw.githubusercontent.com/ethereum/solc-bin/gh-pages/bin/list.json')];
                 case 2:
                     compilerList = _b.sent();
-                    console.log('before resolving dependency');
-                    axios_1.default.get('https://unpkg.com/@openzeppelin/contracts@4.8.0/proxy/ERC1967/ERC1967Upgrade.sol').then(function (res) {
-                        console.log('res: ', res);
-                    }).catch(function (e) {
-                        console.log('e: ', e);
-                    });
                     releases = compilerList.data.releases;
                     if (releases[settings.version]) {
                         compilerUrl_1 = releases[settings.version].replace('soljson-', '').replace('.js', '');
