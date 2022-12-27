@@ -97,16 +97,12 @@ async function compileContract (contractPath: string, settings: CompileSettings)
     try {
       console.log('try resolving: ', url)
       if(await existsSync(url)) {
-        console.log('found locally!')
         const importContent = await fs.readFile(url, 'utf8')
-        console.log('importContent: ', importContent)
 
         cb(null, importContent)
       } else {
-        console.log('not found locally, trying to resolve...')
         const resolver = new RemixURLResolver()
         const result = await resolver.resolve(url)
-        console.log('result: ', result)
 
         cb(null, result.content)
       }

@@ -253,20 +253,16 @@ function compileContract(contractPath, settings) {
                                     return [4 /*yield*/, (0, fs_1.existsSync)(url)];
                                 case 1:
                                     if (!_a.sent()) return [3 /*break*/, 3];
-                                    console.log('found locally!');
                                     return [4 /*yield*/, fs.readFile(url, 'utf8')];
                                 case 2:
                                     importContent = _a.sent();
-                                    console.log('importContent: ', importContent);
                                     cb(null, importContent);
                                     return [3 /*break*/, 5];
                                 case 3:
-                                    console.log('not found locally, trying to resolve...');
                                     resolver = new remix_url_resolver_1.RemixURLResolver();
                                     return [4 /*yield*/, resolver.resolve(url)];
                                 case 4:
                                     result = _a.sent();
-                                    console.log('result: ', result);
                                     cb(null, result.content);
                                     _a.label = 5;
                                 case 5: return [3 /*break*/, 7];
