@@ -30,9 +30,9 @@
   integrity sha512-d+RwPlMp+2qmBfeLYPLXuSRykDIFEwdTA0MMxzS9kh4kvP1ftrc/9fzy6pX6qAjthdXruHQ6/6kjT/DNo5ALuw==
 
 "@babel/runtime@^7.8.3":
-  version "7.20.6"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.20.6.tgz#facf4879bfed9b5326326273a64220f099b0fce3"
-  integrity sha512-Q+8MqP7TiHMWzSfwiJwXCjyf4GYA4Dgw3emg/7xmwsdLJOZUp+nMqcOwOzzYheuM1rhDu8FSj2l0aoMygEuXuA==
+  version "7.20.7"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.20.7.tgz#fcb41a5a70550e04a7b708037c7c32f7f356d8fd"
+  integrity sha512-UF0tvkUtxwAgZ5W/KrkHf0Rn0fdnLDU9ScxBrEVNUprE/MzirjK4MJUX1/BVDv00Sv8cljtukVK1aky++X1SjQ==
   dependencies:
     regenerator-runtime "^0.13.11"
 
@@ -519,13 +519,13 @@
     web3 "^1.5.1"
     webworkify-webpack "^2.1.5"
 
-"@remix-project/remix-url-resolver@^0.0.40":
-  version "0.0.40"
-  resolved "https://registry.yarnpkg.com/@remix-project/remix-url-resolver/-/remix-url-resolver-0.0.40.tgz#8f664727ba76a81bf3ba4712ab6c58c01d19971e"
-  integrity sha512-IW/eWYXSBLTUTWPIbwqUdfx0cLy0l/E0DROssuAR2Xj6UObc41hm0h16fnebDoTxNaZeCfrSl1ljm8rkxOL4tw==
+"@remix-project/remix-url-resolver@0.0.4-3.beta.2":
+  version "0.0.4-3.beta.2"
+  resolved "https://registry.yarnpkg.com/@remix-project/remix-url-resolver/-/remix-url-resolver-0.0.4-3.beta.2.tgz#2ebc6df158324217423014be5947e920eef26716"
+  integrity sha512-oFMWoxUDyRfyYyveZLq0CppNTgExM9zO2Hnu8Qz2DQ/ws2MWha3BhK0ur4rx2ExlZzr9hWA2T7Oj9jZz+DMYyw==
   dependencies:
     "@erebos/bzz-node" "^0.13.0"
-    axios ">=0.21.1"
+    axios "1.2.2"
     url "^0.11.0"
     valid-url "^1.0.9"
 
@@ -743,10 +743,10 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
 
-axios@>=0.21.1, axios@^1.2.0:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.2.1.tgz#44cf04a3c9f0c2252ebd85975361c026cb9f864a"
-  integrity sha512-I88cFiGu9ryt/tfVEi4kX2SITsvDddTajXTOFmt2uK1ZVA8LytjtdeyefdQWEf5PU8w+4SSJDoYnggflB5tW4A==
+axios@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.2.2.tgz#72681724c6e6a43a9fea860fc558127dbe32f9f1"
+  integrity sha512-bz/J4gS2S3I7mpN/YZfGFTqhXTYzRho8Ay38w2otuuDR322KzFIWm/4W2K6gIwvWaws5n+mnb7D1lN9uD+QH6Q==
   dependencies:
     follow-redirects "^1.15.0"
     form-data "^4.0.0"

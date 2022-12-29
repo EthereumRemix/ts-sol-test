@@ -106,7 +106,7 @@ function execute() {
                         optimize: true,
                         evmVersion: null,
                         runs: 200,
-                        version: compilerVersion
+                        version: compilerVersion || '0.8.4'
                     };
                     // load environment and depeondencies
                     return [4 /*yield*/, core.group("Setup environment", function () { return __awaiter(_this, void 0, void 0, function () {
@@ -171,36 +171,36 @@ function execute() {
                     _a.sent();
                     // Move remix dependencies to test folder and transpile test files. Then run tests.
                     return [4 /*yield*/, core.group("Run tests", function () { return __awaiter(_this, void 0, void 0, function () {
-                            var testFiles, filesPaths, _i, testFiles_1, testFile, filePath, filePath;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
+                            var testFiles, filesPaths, _i, testFiles_1, testFile, filePath, filePath, parentPath, folderFiles, _a, folderFiles_1, file, depPath, testFileContent, testFile;
+                            return __generator(this, function (_b) {
+                                switch (_b.label) {
                                     case 0:
                                         if (!isTestPathDirectory) return [3 /*break*/, 11];
                                         return [4 /*yield*/, fs.readdir(testPath)];
                                     case 1:
-                                        testFiles = _a.sent();
+                                        testFiles = _b.sent();
                                         filesPaths = [];
                                         if (!(testFiles.length > 0)) return [3 /*break*/, 10];
                                         _i = 0, testFiles_1 = testFiles;
-                                        _a.label = 2;
+                                        _b.label = 2;
                                     case 2:
                                         if (!(_i < testFiles_1.length)) return [3 /*break*/, 8];
                                         testFile = testFiles_1[_i];
                                         return [4 /*yield*/, fs.stat("".concat(testPath, "/").concat(testFile))];
                                     case 3:
-                                        if (!(_a.sent()).isDirectory()) return [3 /*break*/, 5];
+                                        if (!(_b.sent()).isDirectory()) return [3 /*break*/, 5];
                                         return [4 /*yield*/, transpileDirectory("".concat(testPath, "/").concat(testFile))];
                                     case 4:
-                                        _a.sent();
+                                        _b.sent();
                                         return [3 /*break*/, 7];
                                     case 5:
                                         if (!(testFile.endsWith('.ts') || testFile.endsWith('.js'))) return [3 /*break*/, 7];
                                         return [4 /*yield*/, main("".concat(testPath, "/").concat(testFile), contractPath)];
                                     case 6:
-                                        filePath = _a.sent();
+                                        filePath = _b.sent();
                                         if (filePath)
                                             filesPaths.push(filePath);
-                                        _a.label = 7;
+                                        _b.label = 7;
                                     case 7:
                                         _i++;
                                         return [3 /*break*/, 2];
@@ -208,18 +208,50 @@ function execute() {
                                         if (!(filesPaths.length > 0)) return [3 /*break*/, 10];
                                         return [4 /*yield*/, runTest(filesPaths)];
                                     case 9:
-                                        _a.sent();
-                                        _a.label = 10;
-                                    case 10: return [3 /*break*/, 14];
+                                        _b.sent();
+                                        _b.label = 10;
+                                    case 10: return [3 /*break*/, 23];
                                     case 11: return [4 /*yield*/, main(testPath, contractPath)];
                                     case 12:
-                                        filePath = _a.sent();
-                                        if (!filePath) return [3 /*break*/, 14];
-                                        return [4 /*yield*/, runTest(filePath)];
+                                        filePath = _b.sent();
+                                        if (!filePath) return [3 /*break*/, 23];
+                                        parentPath = testPath.split('/').slice(0, -1).join('/');
+                                        return [4 /*yield*/, fs.readdir(parentPath)];
                                     case 13:
-                                        _a.sent();
-                                        _a.label = 14;
-                                    case 14: return [2 /*return*/];
+                                        folderFiles = _b.sent();
+                                        if (!(folderFiles.length > 0)) return [3 /*break*/, 21];
+                                        _a = 0, folderFiles_1 = folderFiles;
+                                        _b.label = 14;
+                                    case 14:
+                                        if (!(_a < folderFiles_1.length)) return [3 /*break*/, 21];
+                                        file = folderFiles_1[_a];
+                                        return [4 /*yield*/, fs.stat("".concat(parentPath, "/").concat(file))];
+                                    case 15:
+                                        if (!(_b.sent()).isDirectory()) return [3 /*break*/, 17];
+                                        return [4 /*yield*/, transpileDirectory("".concat(parentPath, "/").concat(file))];
+                                    case 16:
+                                        _b.sent();
+                                        return [3 /*break*/, 20];
+                                    case 17:
+                                        if (!(file.endsWith('.ts') && (testPath !== "".concat(parentPath, "/").concat(file)))) return [3 /*break*/, 20];
+                                        depPath = "".concat(parentPath, "/").concat(file);
+                                        return [4 /*yield*/, fs.readFile(depPath, 'utf8')];
+                                    case 18:
+                                        testFileContent = _b.sent();
+                                        testFile = transpileScript(testFileContent);
+                                        depPath = depPath.replace('.ts', '.js');
+                                        return [4 /*yield*/, fs.writeFile(depPath, testFile.outputText)];
+                                    case 19:
+                                        _b.sent();
+                                        _b.label = 20;
+                                    case 20:
+                                        _a++;
+                                        return [3 /*break*/, 14];
+                                    case 21: return [4 /*yield*/, runTest(filePath)];
+                                    case 22:
+                                        _b.sent();
+                                        _b.label = 23;
+                                    case 23: return [2 /*return*/];
                                 }
                             });
                         }); })];
@@ -288,7 +320,7 @@ function compileContract(contractPath, settings) {
                                 remixCompiler.event.register('compilerLoaded', function () {
                                     remixCompiler.compile(compilationTargets, contractPath);
                                     // use setInterval to keep gh-action process alive in other for compilation to finish
-                                    process.stdout.write('\nCompiling');
+                                    process.stdout.write('\nCompiling ');
                                     intervalId = setInterval(function () {
                                         process.stdout.write('.');
                                     }, 1000);
@@ -397,20 +429,20 @@ function setupRunEnv() {
                     packageLock = path.join(workingDirectory, 'package-lock.json');
                     isNPMrepo = (0, fs_1.existsSync)(packageLock);
                     if (!isYarnRepo) return [3 /*break*/, 3];
-                    return [4 /*yield*/, cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper', '--dev'])];
+                    return [4 /*yield*/, cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper', '@openzeppelin/contracts', '--dev'])];
                 case 2:
                     _a.sent();
                     return [3 /*break*/, 8];
                 case 3:
                     if (!isNPMrepo) return [3 /*break*/, 5];
-                    return [4 /*yield*/, cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '@openzeppelin/contracts', '--save-dev'])];
                 case 4:
                     _a.sent();
                     return [3 /*break*/, 8];
                 case 5: return [4 /*yield*/, cli.exec('npm', ['init', '-y'])];
                 case 6:
                     _a.sent();
-                    return [4 /*yield*/, cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '@openzeppelin/contracts', '--save-dev'])];
                 case 7:
                     _a.sent();
                     _a.label = 8;

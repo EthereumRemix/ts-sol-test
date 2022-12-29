@@ -30,7 +30,7 @@ async function execute () {
     optimize: true,
     evmVersion: null,
     runs: 200,
-    version: compilerVersion
+    version: compilerVersion || '0.8.4'
   }
 
   // load environment and depeondencies
@@ -83,6 +83,22 @@ async function execute () {
       const filePath = await main(testPath, contractPath)
 
       if (filePath) {
+        const parentPath = testPath.split('/').slice(0, -1).join('/')
+        const folderFiles = await fs.readdir(parentPath)
+  
+        if (folderFiles.length > 0) {
+          for (const file of folderFiles) {
+            if ((await fs.stat(`${parentPath}/${file}`)).isDirectory()) await transpileDirectory(`${parentPath}/${file}`)
+            else if (file.endsWith('.ts') && (testPath !== `${parentPath}/${file}`)) {
+              let depPath = `${parentPath}/${file}`
+              const testFileContent = await fs.readFile(depPath, 'utf8')
+              const testFile = transpileScript(testFileContent)
+  
+              depPath = depPath.replace('.ts', '.js')
+              await fs.writeFile(depPath, testFile.outputText)
+            }
+          }
+        }
         await runTest(filePath)
       }
     }
@@ -125,7 +141,7 @@ async function compileContract (contractPath: string, settings: CompileSettings)
       remixCompiler.event.register('compilerLoaded', () => {
         remixCompiler.compile(compilationTargets, contractPath)
         // use setInterval to keep gh-action process alive in other for compilation to finish
-        process.stdout.write('\nCompiling')
+        process.stdout.write('\nCompiling ')
         intervalId = setInterval(() => {
           process.stdout.write('.')
         }, 1000)
@@ -198,12 +214,12 @@ async function setupRunEnv (): Promise<void> {
   const isNPMrepo = existsSync(packageLock)
 
   if (isYarnRepo) {
-    await cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper', '--dev'])
+    await cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper', '@openzeppelin/contracts', '--dev'])
   } else if (isNPMrepo) {
-    await cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])
+    await cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '@openzeppelin/contracts', '--save-dev'])
   } else {
     await cli.exec('npm', ['init', '-y'])
-    await cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])
+    await cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '@openzeppelin/contracts', '--save-dev'])
   }
 }
 
