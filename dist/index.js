@@ -234,7 +234,7 @@ function execute() {
 // Compile single smart contract
 function compileContract(contractPath, settings) {
     return __awaiter(this, void 0, void 0, function () {
-        var contract, compilationTargets, remixCompiler, compilerList, releases, compilerUrl_1;
+        var contract, compilationTargets, remixCompiler, compilerList, resolveDependecy, releases, compilerUrl_1;
         var _a;
         var _this = this;
         return __generator(this, function (_b) {
@@ -249,7 +249,6 @@ function compileContract(contractPath, settings) {
                             switch (_a.label) {
                                 case 0:
                                     _a.trys.push([0, 6, , 7]);
-                                    console.log('try resolving: ', url);
                                     return [4 /*yield*/, (0, fs_1.existsSync)(url)];
                                 case 1:
                                     if (!_a.sent()) return [3 /*break*/, 3];
@@ -277,6 +276,10 @@ function compileContract(contractPath, settings) {
                     return [4 /*yield*/, axios_1.default.get('https://raw.githubusercontent.com/ethereum/solc-bin/gh-pages/bin/list.json')];
                 case 2:
                     compilerList = _b.sent();
+                    return [4 /*yield*/, axios_1.default.get('https://unpkg.com/@openzeppelin/contracts@4.8.0/proxy/ERC1967/ERC1967Upgrade.sol', { transformResponse: [] })];
+                case 3:
+                    resolveDependecy = _b.sent();
+                    console.log('resolveDependecy: ', resolveDependecy);
                     releases = compilerList.data.releases;
                     if (releases[settings.version]) {
                         compilerUrl_1 = releases[settings.version].replace('soljson-', '').replace('.js', '');
