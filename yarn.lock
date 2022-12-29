@@ -519,13 +519,13 @@
     web3 "^1.5.1"
     webworkify-webpack "^2.1.5"
 
-"@remix-project/remix-url-resolver@0.0.4-3.beta.1":
-  version "0.0.4-3.beta.1"
-  resolved "https://registry.yarnpkg.com/@remix-project/remix-url-resolver/-/remix-url-resolver-0.0.4-3.beta.1.tgz#d6f476d2b53afdbfec9d85771cdf7359d0e189e3"
-  integrity sha512-Z09JRP17EFAW72Lkmj9PWGkG9MmbjuLcodq6uo7KlsZHopQWJqji+NuBpMqffIyEv4BDcWrxyQMy/l0UzEQ1Nw==
+"@remix-project/remix-url-resolver@0.0.4-3.beta.2":
+  version "0.0.4-3.beta.2"
+  resolved "https://registry.yarnpkg.com/@remix-project/remix-url-resolver/-/remix-url-resolver-0.0.4-3.beta.2.tgz#2ebc6df158324217423014be5947e920eef26716"
+  integrity sha512-oFMWoxUDyRfyYyveZLq0CppNTgExM9zO2Hnu8Qz2DQ/ws2MWha3BhK0ur4rx2ExlZzr9hWA2T7Oj9jZz+DMYyw==
   dependencies:
     "@erebos/bzz-node" "^0.13.0"
-    axios "1.2.0"
+    axios "1.2.2"
     url "^0.11.0"
     valid-url "^1.0.9"
 
@@ -742,15 +742,6 @@ aws4@^1.8.0:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
-
-axios@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.2.0.tgz#1cb65bd75162c70e9f8d118a905126c4a201d383"
-  integrity sha512-zT7wZyNYu3N5Bu0wuZ6QccIf93Qk1eV8LOewxgjOZFd2DenOs98cJ7+Y6703d0wkaXGY6/nZd4EweJaHz9uzQw==
-  dependencies:
-    follow-redirects "^1.15.0"
-    form-data "^4.0.0"
-    proxy-from-env "^1.1.0"
 
 axios@1.2.2:
   version "1.2.2"
