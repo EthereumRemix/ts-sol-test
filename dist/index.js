@@ -233,7 +233,7 @@ function execute() {
                                         _b.sent();
                                         return [3 /*break*/, 20];
                                     case 17:
-                                        if (!file.endsWith('.ts')) return [3 /*break*/, 20];
+                                        if (!(file.endsWith('.ts') && (testPath !== "".concat(parentPath, "/").concat(file)))) return [3 /*break*/, 20];
                                         depPath = "".concat(parentPath, "/").concat(file);
                                         return [4 /*yield*/, fs.readFile(depPath, 'utf8')];
                                     case 18:

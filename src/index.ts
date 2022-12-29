@@ -89,7 +89,7 @@ async function execute () {
         if (folderFiles.length > 0) {
           for (const file of folderFiles) {
             if ((await fs.stat(`${parentPath}/${file}`)).isDirectory()) await transpileDirectory(`${parentPath}/${file}`)
-            else if (file.endsWith('.ts')) {
+            else if (file.endsWith('.ts') && (testPath !== `${parentPath}/${file}`)) {
               let depPath = `${parentPath}/${file}`
               const testFileContent = await fs.readFile(depPath, 'utf8')
               const testFile = transpileScript(testFileContent)
