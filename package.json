@@ -13,7 +13,7 @@
     "@actions/exec": "^1.1.1",
     "@remix-project/remix-solidity": "^0.5.5",
     "@remix-project/remix-url-resolver": "0.0.4-3.beta.1",
-    "axios": "1.2.0",
+    "axios": "1.2.2",
     "tslib": "^2.4.1",
     "typescript": "^4.9.3"
   }
