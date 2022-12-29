@@ -30,7 +30,7 @@ async function execute () {
     optimize: true,
     evmVersion: null,
     runs: 200,
-    version: compilerVersion
+    version: compilerVersion || '0.8.4'
   }
 
   // load environment and depeondencies
@@ -83,6 +83,22 @@ async function execute () {
       const filePath = await main(testPath, contractPath)
 
       if (filePath) {
+        const parentPath = testPath.split('/').slice(0, -1).join('/')
+        const folderFiles = await fs.readdir(parentPath)
+  
+        if (folderFiles.length > 0) {
+          for (const file of folderFiles) {
+            if ((await fs.stat(`${parentPath}/${file}`)).isDirectory()) await transpileDirectory(`${parentPath}/${file}`)
+            else if (file.endsWith('.ts')) {
+              let depPath = `${parentPath}/${file}`
+              const testFileContent = await fs.readFile(depPath, 'utf8')
+              const testFile = transpileScript(testFileContent)
+  
+              depPath = depPath.replace('.ts', '.js')
+              await fs.writeFile(depPath, testFile.outputText)
+            }
+          }
+        }
         await runTest(filePath)
       }
     }
@@ -110,9 +126,6 @@ async function compileContract (contractPath: string, settings: CompileSettings)
     }
   })
   const compilerList = await axios.get('https://raw.githubusercontent.com/ethereum/solc-bin/gh-pages/bin/list.json')
-  const resolveDependecy = await axios.get('https://unpkg.com/@openzeppelin/contracts@4.8.0/proxy/ERC1967/ERC1967Upgrade.sol', { transformResponse: [] })
-
-  console.log('resolveDependecy: ', resolveDependecy)
   const releases = compilerList.data.releases
 
   if (releases[settings.version]) {
