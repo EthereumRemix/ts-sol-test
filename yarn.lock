@@ -519,10 +519,10 @@
     web3 "^1.5.1"
     webworkify-webpack "^2.1.5"
 
-"@remix-project/remix-url-resolver@0.0.4-3.beta.2":
-  version "0.0.4-3.beta.2"
-  resolved "https://registry.yarnpkg.com/@remix-project/remix-url-resolver/-/remix-url-resolver-0.0.4-3.beta.2.tgz#2ebc6df158324217423014be5947e920eef26716"
-  integrity sha512-oFMWoxUDyRfyYyveZLq0CppNTgExM9zO2Hnu8Qz2DQ/ws2MWha3BhK0ur4rx2ExlZzr9hWA2T7Oj9jZz+DMYyw==
+"@remix-project/remix-url-resolver@^0.0.43":
+  version "0.0.43"
+  resolved "https://registry.yarnpkg.com/@remix-project/remix-url-resolver/-/remix-url-resolver-0.0.43.tgz#fd157c753073b0904a012aba561fc4ddace05797"
+  integrity sha512-N02adFwDJ7tKW3rWBHTH3pkEXHQiK5Cuw7uldyl5itKb16cgGQKOLRL7255uIrB3TggWiyvsXLmzth9Zp3v54A==
   dependencies:
     "@erebos/bzz-node" "^0.13.0"
     axios "1.2.2"
