@@ -1,4 +1,4 @@
-name: 'Solidity Unit Tests Action'
+name: 'JS & TS Solidity Unit Tests Action'
 description: 'Runs unit testing on solidity contracts'
 inputs:
   test-path:
