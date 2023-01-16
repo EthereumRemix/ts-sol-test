@@ -445,7 +445,7 @@ function setupRunEnv() {
                     return [4 /*yield*/, cli.exec('npm', ['install'])];
                 case 7:
                     _a.sent();
-                    return [4 /*yield*/, cli.exec('npm', ['mocha', '@remix-project/ghaction-helper', '--save-dev'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])];
                 case 8:
                     _a.sent();
                     _a.label = 9;
