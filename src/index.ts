@@ -219,7 +219,8 @@ async function setupRunEnv (): Promise<void> {
     await cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])
   } else {
     await cli.exec('npm', ['init', '-y'])
-    await cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper'])
+    await cli.exec('npm', ['install'])
+    await cli.exec('npm', ['mocha', '@remix-project/ghaction-helper', '--save-dev'])
   }
 }
 
