@@ -432,21 +432,24 @@ function setupRunEnv() {
                     return [4 /*yield*/, cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper', '--dev'])];
                 case 2:
                     _a.sent();
-                    return [3 /*break*/, 8];
+                    return [3 /*break*/, 9];
                 case 3:
                     if (!isNPMrepo) return [3 /*break*/, 5];
                     return [4 /*yield*/, cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])];
                 case 4:
                     _a.sent();
-                    return [3 /*break*/, 8];
+                    return [3 /*break*/, 9];
                 case 5: return [4 /*yield*/, cli.exec('npm', ['init', '-y'])];
                 case 6:
                     _a.sent();
-                    return [4 /*yield*/, cli.exec('npm', ['install', 'mocha', '@remix-project/ghaction-helper'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install'])];
                 case 7:
                     _a.sent();
-                    _a.label = 8;
-                case 8: return [2 /*return*/];
+                    return [4 /*yield*/, cli.exec('npm', ['mocha', '@remix-project/ghaction-helper', '--save-dev'])];
+                case 8:
+                    _a.sent();
+                    _a.label = 9;
+                case 9: return [2 /*return*/];
             }
         });
     });
