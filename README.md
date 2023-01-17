@@ -17,7 +17,7 @@ To know more about Remix IDE `Solidity Unit Testing`, visit [Remix IDE official 
       - name: Checkout
           uses: actions/checkout@v2
       - name: Run SUT Action
-          uses: EthereumRemix/ts-sol-test@v1.1
+          uses: EthereumRemix/ts-sol-test@v1.2
           with:
           test-path: 'sample/tests'
           contract-path: 'sample/contracts'
