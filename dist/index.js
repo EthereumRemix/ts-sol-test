@@ -345,7 +345,7 @@ function compileContract(contractPath, settings) {
                                                 return [2 /*return*/, resolve()];
                                             case 4:
                                                 clearInterval(intervalId);
-                                                return [2 /*return*/, reject('Compilation failed')];
+                                                throw new Error('Compilation failed');
                                         }
                                     });
                                 }); });
