@@ -9,7 +9,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Run SUT Action
-        uses: EthereumRemix/ts-sol-test@v1.3.3-dev
+        uses: EthereumRemix/ts-sol-test@v1.3.4-dev
         with:
           test-path: 'sample/tests'
           contract-path: 'sample/contracts'
