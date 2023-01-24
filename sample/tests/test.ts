@@ -13,10 +13,6 @@ let verifier: ethers.Contract
 describe("Basic remix reward deploy", function () {
   it("Deploy with proxy", async function () {
     const [owner, betatester, user] = await ethers.getSigners();
-    console.log('owner: ', owner)
-    console.log('betatester: ', betatester)
-    console.log('user: ', user)
-
     const Remix = await ethers.getContractFactory("Remix");
     console.log('Remix: ', Remix)
     remix = await Remix.connect(owner).deploy();

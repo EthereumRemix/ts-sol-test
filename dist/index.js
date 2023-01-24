@@ -429,20 +429,20 @@ function setupRunEnv() {
                     packageLock = path.join(workingDirectory, 'package-lock.json');
                     isNPMrepo = (0, fs_1.existsSync)(packageLock);
                     if (!isYarnRepo) return [3 /*break*/, 3];
-                    return [4 /*yield*/, cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper@0.1.4-beta.6', '--dev'])];
+                    return [4 /*yield*/, cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper@0.1.4-beta.7', '--dev'])];
                 case 2:
                     _a.sent();
                     return [3 /*break*/, 8];
                 case 3:
                     if (!isNPMrepo) return [3 /*break*/, 5];
-                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.4-beta.6', '--save-dev'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.4-beta.7', '--save-dev'])];
                 case 4:
                     _a.sent();
                     return [3 /*break*/, 8];
                 case 5: return [4 /*yield*/, cli.exec('npm', ['init', '-y'])];
                 case 6:
                     _a.sent();
-                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.4-beta.6', '--save-dev'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.4-beta.7', '--save-dev'])];
                 case 7:
                     _a.sent();
                     _a.label = 8;
@@ -458,11 +458,11 @@ function runTest(filePath) {
             switch (_a.label) {
                 case 0:
                     if (!Array.isArray(filePath)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, cli.exec('npx', __spreadArray(__spreadArray(['mocha'], filePath, true), ['--timeout', '60000'], false))];
+                    return [4 /*yield*/, cli.exec('npx', __spreadArray(__spreadArray(['mocha'], filePath, true), ['--timeout', '20000'], false))];
                 case 1:
                     _a.sent();
                     return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, cli.exec('npx', ['mocha', filePath, '--timeout', '60000'])];
+                case 2: return [4 /*yield*/, cli.exec('npx', ['mocha', filePath, '--timeout', '20000'])];
                 case 3:
                     _a.sent();
                     _a.label = 4;
