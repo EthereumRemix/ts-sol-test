@@ -21,7 +21,7 @@ describe("Basic remix reward deploy", function () {
     console.log('Remix: ', Remix)
     remix = await Remix.connect(owner);
     console.log('remix 1: ', remix)
-    console.log('global.ganacheProvider: ', global.ganacheProvider)
+    console.log('global.remixProvider: ', global.remixProvider)
     remix = await Remix.deploy();
     console.log('remix 2: ', remix)
     await remix.deployed()
