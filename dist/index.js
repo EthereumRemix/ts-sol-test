@@ -103,9 +103,9 @@ function execute() {
                 case 2:
                     isContractPathDirectory = (_a.sent()).isDirectory();
                     compileSettings = {
-                        optimize: true,
+                        optimize: false,
                         evmVersion: null,
-                        runs: 200,
+                        runs: 0,
                         version: compilerVersion || '0.8.4'
                     };
                     // load environment and depeondencies

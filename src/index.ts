@@ -27,9 +27,9 @@ async function execute () {
   const isTestPathDirectory = (await fs.stat(testPath)).isDirectory()
   const isContractPathDirectory = (await fs.stat(contractPath)).isDirectory()
   const compileSettings = {
-    optimize: true,
+    optimize: false,
     evmVersion: null,
-    runs: 200,
+    runs: 0,
     version: compilerVersion || '0.8.4'
   }
 
