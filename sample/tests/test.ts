@@ -19,11 +19,8 @@ describe("Basic remix reward deploy", function () {
 
     const Remix = await ethers.getContractFactory("Remix");
     console.log('Remix: ', Remix)
-    remix = await Remix.connect(owner);
-    console.log('remix 1: ', remix)
-    console.log('global.remixProvider: ', global.remixProvider)
-    remix = await remix.deploy();
-    console.log('remix 2: ', remix)
+    remix = await Remix.connect(owner).deploy();
+    console.log('small remix: ', remix)
     await remix.deployed()
 
     const implAddress = remix.address
