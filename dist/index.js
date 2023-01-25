@@ -458,11 +458,11 @@ function runTest(filePath) {
             switch (_a.label) {
                 case 0:
                     if (!Array.isArray(filePath)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, cli.exec('npx', __spreadArray(__spreadArray(['mocha'], filePath, true), ['--timeout', '60000'], false))];
+                    return [4 /*yield*/, cli.exec('npx', __spreadArray(['mocha'], filePath, true))];
                 case 1:
                     _a.sent();
                     return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, cli.exec('npx', ['mocha', filePath, '--timeout', '60000'])];
+                case 2: return [4 /*yield*/, cli.exec('npx', ['mocha', filePath])];
                 case 3:
                     _a.sent();
                     _a.label = 4;

@@ -226,9 +226,9 @@ async function setupRunEnv (): Promise<void> {
 // Run tests
 async function runTest (filePath: string | string[]): Promise<void> {
   if (Array.isArray(filePath)) {
-      await cli.exec('npx', ['mocha', ...filePath, '--timeout', '60000'])
+      await cli.exec('npx', ['mocha', ...filePath])
   } else {
-      await cli.exec('npx', ['mocha', filePath, '--timeout', '60000'])
+      await cli.exec('npx', ['mocha', filePath])
   }
 }
 
