@@ -9,6 +9,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Run SUT Action
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
         uses: EthereumRemix/ts-sol-test@v1.3.20-dev
         with:
           test-path: 'sample/tests'
