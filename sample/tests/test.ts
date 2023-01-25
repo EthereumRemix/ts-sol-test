@@ -15,6 +15,7 @@ describe("Basic remix reward deploy", function () {
     const [owner, betatester, user] = await ethers.getSigners();
     const Remix = await ethers.getContractFactory("Remix");
     console.log('Remix: ', Remix)
+    console.log('global.remixProvider: ', global.remixProvider)
     remix = await Remix.connect(owner).deploy();
     console.log('small remix: ', remix)
     await remix.deployed()
