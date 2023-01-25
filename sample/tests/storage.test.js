@@ -5,6 +5,7 @@ const { ethers } = require("hardhat");
 describe("Storage", function () {
   it("test initial value", async function () {
     const Storage = await ethers.getContractFactory("Storage");
+    console.log('global.remixProvider: ', global.remixProvider)
     const storage = await Storage.deploy();
     await storage.deployed();
     console.log('storage deployed at:'+ storage.address)
