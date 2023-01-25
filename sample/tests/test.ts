@@ -14,19 +14,14 @@ describe("Basic remix reward deploy", function () {
   it("Deploy with proxy", async function () {
     const [owner, betatester, user] = await ethers.getSigners();
     const Remix = await ethers.getContractFactory("Remix");
-    console.log('Remix: ', Remix)
-    console.log('global.remixProvider: ', global.remixProvider)
     remix = await Remix.connect(owner).deploy();
-    console.log('small remix: ', remix)
     await remix.deployed()
 
     const implAddress = remix.address
     console.log('implementation address', implAddress)
 
     const Proxy = await ethers.getContractFactory('ERC1967Proxy')
-    console.log('Proxy: ', Proxy)
     proxy = await Proxy.connect(owner).deploy(implAddress, '0x8129fc1c')
-    console.log('small proxy: ', proxy)
     await proxy.deployed()
     console.log("Remix reward deployed to:", proxy.address);
 
