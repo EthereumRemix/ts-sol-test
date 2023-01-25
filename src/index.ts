@@ -214,21 +214,21 @@ async function setupRunEnv (): Promise<void> {
   const isNPMrepo = existsSync(packageLock)
 
   if (isYarnRepo) {
-    await cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper@0.1.4-beta.8', '--dev'])
+    await cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper@0.1.4-beta.9', '--dev'])
   } else if (isNPMrepo) {
-    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.4-beta.8', '--save-dev'])
+    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.4-beta.9', '--save-dev'])
   } else {
     await cli.exec('npm', ['init', '-y'])
-    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.4-beta.8', '--save-dev'])
+    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.4-beta.9', '--save-dev'])
   }
 }
 
 // Run tests
 async function runTest (filePath: string | string[]): Promise<void> {
   if (Array.isArray(filePath)) {
-      await cli.exec('npx', ['mocha', ...filePath, '--timeout', '240000'])
+      await cli.exec('npx', ['mocha', ...filePath, '--timeout', '60000'])
   } else {
-      await cli.exec('npx', ['mocha', filePath, '--timeout', '240000'])
+      await cli.exec('npx', ['mocha', filePath, '--timeout', '60000'])
   }
 }
 
