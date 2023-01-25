@@ -12,5 +12,5 @@ jobs:
         uses: EthereumRemix/ts-sol-test@v1.3.15-dev
         with:
           test-path: 'sample/tests/storage.test.js'
-          contract-path: 'sample/contracts/storage.sol'
+          contract-path: 'sample/contracts'
           compiler-version: '0.8.7'
