@@ -24,12 +24,25 @@ async function execute () {
   contractPath = path.resolve(contractPath)
   testPath = path.resolve(testPath)
   const compilerVersion = core.getInput('compiler-version')
+  const evmVersion = core.getInput('evm-version') as EVMVersion
+  const runs = core.getInput('optimizer-runs')
+  const optimize = core.getBooleanInput('optimize')
+  const hardFork = core.getInput('hard-fork')
+  const nodeUrl = core.getInput('node-url')
+  const blockNumber = core.getInput('block-number')
+
+  const providerConfig = { 
+    nodeUrl,
+    blockNumber: isNaN(parseInt(blockNumber)) ? 'latest' : parseInt(blockNumber),
+    hardFork
+  }
+
   const isTestPathDirectory = (await fs.stat(testPath)).isDirectory()
   const isContractPathDirectory = (await fs.stat(contractPath)).isDirectory()
   const compileSettings = {
-    optimize: false,
-    evmVersion: null,
-    runs: 0,
+    optimize: optimize || false,
+    evmVersion: evmVersion || null,
+    runs: parseInt(runs) || 0,
     version: compilerVersion || '0.8.4'
   }
 
@@ -69,7 +82,7 @@ async function execute () {
           if ((await fs.stat(`${testPath}/${testFile}`)).isDirectory()) await transpileDirectory(`${testPath}/${testFile}`)
           else {
             if (testFile.endsWith('.ts') || testFile.endsWith('.js')) {
-              const filePath = await main(`${testPath}/${testFile}`, contractPath)
+              const filePath = await main(`${testPath}/${testFile}`, contractPath, providerConfig)
 
               if (filePath) filesPaths.push(filePath)
             }
@@ -80,7 +93,7 @@ async function execute () {
         }
       }
     } else {
-      const filePath = await main(testPath, contractPath)
+      const filePath = await main(testPath, contractPath, providerConfig)
 
       if (filePath) {
         const parentPath = testPath.split('/').slice(0, -1).join('/')
@@ -167,7 +180,7 @@ async function compileContract (contractPath: string, settings: CompileSettings)
 }
 
 // Transpile and execute test files
-async function main (filePath: string, contractPath: string): Promise<string | undefined> {
+async function main (filePath: string, contractPath: string, providerConfig: { hardFork: string, nodeUrl: string, blockNumber: number | string }): Promise<string | undefined> {
   try {
     // TODO: replace regex globally
     let testFileContent = await fs.readFile(filePath, 'utf8')
@@ -184,7 +197,7 @@ async function main (filePath: string, contractPath: string): Promise<string | u
     if (describeIndex === -1) {
       throw new Error(`No describe function found in ${filePath}. Please wrap your tests in a describe function.`)
     } else {
-      testFileContent = `${testFileContent.slice(0, describeIndex)}\nglobal.remixContractArtifactsPath = "${contractPath}/build-artifacts"; \n${testFileContent.slice(describeIndex)}`
+      testFileContent = `${testFileContent.slice(0, describeIndex)}\nglobal.remixContractArtifactsPath = "${contractPath}/build-artifacts";\nglobal.fork = "${providerConfig.hardFork}";\nglobal.nodeUrl = "${providerConfig.nodeUrl}";\nglobal.blockNumber = "${providerConfig.blockNumber}";\n${testFileContent.slice(describeIndex)}`
       if (hardhatImportIndex > -1) testFileContent = testFileContent.replace(hardhatEthersImportRegex, 'from \'@remix-project/ghaction-helper\'')
       if (hardhatRequireIndex > -1) testFileContent = testFileContent.replace(hardhatEthersRequireRegex, 'require(\'@remix-project/ghaction-helper\')')
       if (chaiImportIndex) testFileContent = testFileContent.replace(chaiImportRegex, 'from \'@remix-project/ghaction-helper\'')
@@ -214,12 +227,12 @@ async function setupRunEnv (): Promise<void> {
   const isNPMrepo = existsSync(packageLock)
 
   if (isYarnRepo) {
-    await cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper@0.1.4-beta.11', '--dev'])
+    await cli.exec('yarn', ['add', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.0', '--dev'])
   } else if (isNPMrepo) {
-    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.4-beta.11', '--save-dev'])
+    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.0', '--save-dev'])
   } else {
     await cli.exec('npm', ['init', '-y'])
-    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.4-beta.11', '--save-dev'])
+    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.0', '--save-dev'])
   }
 }
 
