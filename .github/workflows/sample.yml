@@ -11,11 +11,11 @@ jobs:
       - name: Run SUT Action
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
-        uses: EthereumRemix/ts-sol-test@v1.3.29-dev
+        uses: EthereumRemix/ts-sol-test@v1.3.30-dev
         with:
           test-path: 'sample/tests'
           contract-path: 'sample/contracts'
-          compiler-version: '0.8.13'
+          compiler-version: '0.8.17'
           hard-fork: 'merge'
           node-url: 'https://rpc.archivenode.io/e50zmkroshle2e2e50zm0044i7ao04ym'
 
