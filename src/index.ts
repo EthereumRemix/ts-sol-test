@@ -42,7 +42,7 @@ async function execute () {
   const compileSettings = {
     optimize: optimize || false,
     evmVersion: evmVersion || null,
-    runs: parseInt(runs) || 0,
+    runs: parseInt(runs),
     version: compilerVersion || '0.8.4'
   }
 
