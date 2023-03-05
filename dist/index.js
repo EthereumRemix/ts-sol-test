@@ -398,7 +398,6 @@ function main(filePath, contractPath, providerConfig) {
                         testFileContent = testFileContent.replace(chaiImportRegex, 'from \'@remix-project/ghaction-helper\'');
                     if (chaiRequireIndex)
                         testFileContent = testFileContent.replace(chaiRequireRegex, 'require(\'@remix-project/ghaction-helper\')');
-                    console.log('testFileContent: ', testFileContent);
                     if (!filePath.endsWith('.ts')) return [3 /*break*/, 3];
                     testFile = transpileScript(testFileContent);
                     filePath = filePath.replace('.ts', '.js');

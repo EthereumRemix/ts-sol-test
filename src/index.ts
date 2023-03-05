@@ -198,7 +198,6 @@ async function main (filePath: string, contractPath: string, providerConfig: { h
     if (hardhatRequireIndex > -1) testFileContent = testFileContent.replace(hardhatEthersRequireRegex, 'require(\'@remix-project/ghaction-helper\')')
     if (chaiImportIndex) testFileContent = testFileContent.replace(chaiImportRegex, 'from \'@remix-project/ghaction-helper\'')
     if (chaiRequireIndex) testFileContent = testFileContent.replace(chaiRequireRegex, 'require(\'@remix-project/ghaction-helper\')')
-    console.log('testFileContent: ', testFileContent)
     if (filePath.endsWith('.ts')) {
       const testFile = transpileScript(testFileContent)
 
