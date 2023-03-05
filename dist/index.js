@@ -285,7 +285,7 @@ function compileContract(contractPath, settings) {
                 case 0: return [4 /*yield*/, fs.readFile(contractPath, 'utf8')];
                 case 1:
                     contract = _b.sent();
-                    compilationTargets = (_a = {}, _a[contractPath] = { content: contract }, _a);
+                    compilationTargets = (_a = {}, _a[contractPath.endsWith('.sol') ? path.dirname(contractPath) : contractPath] = { content: contract }, _a);
                     remixCompiler = new remix_solidity_1.Compiler(function (url, cb) { return __awaiter(_this, void 0, void 0, function () {
                         var importContent, resolver, result, e_1;
                         return __generator(this, function (_a) {

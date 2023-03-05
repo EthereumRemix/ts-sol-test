@@ -121,7 +121,7 @@ async function execute () {
 // Compile single smart contract
 async function compileContract (contractPath: string, settings: CompileSettings): Promise<void> {
   const contract = await fs.readFile(contractPath, 'utf8')
-  const compilationTargets = { [contractPath]: { content: contract } }
+  const compilationTargets = { [contractPath.endsWith('.sol') ? path.dirname(contractPath) : contractPath]: { content: contract } }
   const remixCompiler = new RemixCompiler(async (url: string, cb: (error: string | null, result?: string) => void) => {
     try {
       if(await existsSync(url)) {
