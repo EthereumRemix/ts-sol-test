@@ -440,20 +440,20 @@ function setupRunEnv() {
                     packageLock = path.join(workingDirectory, 'package-lock.json');
                     isNPMrepo = (0, fs_1.existsSync)(packageLock);
                     if (!isYarnRepo) return [3 /*break*/, 3];
-                    return [4 /*yield*/, cli.exec('yarn', ['add', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.1', '--dev'])];
+                    return [4 /*yield*/, cli.exec('yarn', ['add', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.2', '--dev'])];
                 case 2:
                     _a.sent();
                     return [3 /*break*/, 8];
                 case 3:
                     if (!isNPMrepo) return [3 /*break*/, 5];
-                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.1', '--save-dev'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.2', '--save-dev'])];
                 case 4:
                     _a.sent();
                     return [3 /*break*/, 8];
                 case 5: return [4 /*yield*/, cli.exec('npm', ['init', '-y'])];
                 case 6:
                     _a.sent();
-                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.1', '--save-dev'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.2', '--save-dev'])];
                 case 7:
                     _a.sent();
                     _a.label = 8;
