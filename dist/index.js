@@ -373,11 +373,11 @@ function compileContract(contractPath, settings) {
 // Transpile and execute test files
 function main(filePath, contractPath, providerConfig) {
     return __awaiter(this, void 0, void 0, function () {
-        var testFileContent, hardhatEthersImportRegex, hardhatEthersRequireRegex, chaiImportRegex, chaiRequireRegex, hardhatImportIndex, hardhatRequireIndex, chaiImportIndex, chaiRequireIndex, describeIndex, testFile, error_1;
+        var testFileContent, hardhatEthersImportRegex, hardhatEthersRequireRegex, chaiImportRegex, chaiRequireRegex, hardhatImportIndex, hardhatRequireIndex, chaiImportIndex, chaiRequireIndex, testFile, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 7, , 8]);
+                    _a.trys.push([0, 6, , 7]);
                     return [4 /*yield*/, fs.readFile(filePath, 'utf8')];
                 case 1:
                     testFileContent = _a.sent();
@@ -389,11 +389,7 @@ function main(filePath, contractPath, providerConfig) {
                     hardhatRequireIndex = testFileContent.search(hardhatEthersRequireRegex);
                     chaiImportIndex = testFileContent.search(chaiImportRegex);
                     chaiRequireIndex = testFileContent.search(chaiRequireRegex);
-                    describeIndex = testFileContent.search(/describe\s*\(/);
-                    if (!(describeIndex === -1)) return [3 /*break*/, 2];
-                    throw new Error("No describe function found in ".concat(filePath, ". Please wrap your tests in a describe function."));
-                case 2:
-                    testFileContent = "".concat(testFileContent.slice(0, describeIndex), "\nglobal.remixContractArtifactsPath = \"").concat(contractPath, "/build-artifacts\";\nglobal.fork = \"").concat(providerConfig.hardFork, "\";\nglobal.nodeUrl = \"").concat(providerConfig.nodeUrl, "\";\nglobal.blockNumber = \"").concat(providerConfig.blockNumber, "\";\n").concat(testFileContent.slice(describeIndex));
+                    testFileContent = "global.remixContractArtifactsPath = \"".concat(contractPath, "/build-artifacts\";\nglobal.fork = \"").concat(providerConfig.hardFork, "\";\nglobal.nodeUrl = \"").concat(providerConfig.nodeUrl, "\";\nglobal.blockNumber = \"").concat(providerConfig.blockNumber, "\";\n").concat(testFileContent);
                     if (hardhatImportIndex > -1)
                         testFileContent = testFileContent.replace(hardhatEthersImportRegex, 'from \'@remix-project/ghaction-helper\'');
                     if (hardhatRequireIndex > -1)
@@ -403,25 +399,25 @@ function main(filePath, contractPath, providerConfig) {
                     if (chaiRequireIndex)
                         testFileContent = testFileContent.replace(chaiRequireRegex, 'require(\'@remix-project/ghaction-helper\')');
                     console.log('testFileContent: ', testFileContent);
-                    if (!filePath.endsWith('.ts')) return [3 /*break*/, 4];
+                    if (!filePath.endsWith('.ts')) return [3 /*break*/, 3];
                     testFile = transpileScript(testFileContent);
                     filePath = filePath.replace('.ts', '.js');
                     return [4 /*yield*/, fs.writeFile(filePath, testFile.outputText)];
+                case 2:
+                    _a.sent();
+                    return [2 /*return*/, filePath];
                 case 3:
-                    _a.sent();
-                    return [2 /*return*/, filePath];
-                case 4:
-                    if (!filePath.endsWith('.js')) return [3 /*break*/, 6];
+                    if (!filePath.endsWith('.js')) return [3 /*break*/, 5];
                     return [4 /*yield*/, fs.writeFile(filePath, testFileContent)];
-                case 5:
+                case 4:
                     _a.sent();
                     return [2 /*return*/, filePath];
-                case 6: return [3 /*break*/, 8];
-                case 7:
+                case 5: return [3 /*break*/, 7];
+                case 6:
                     error_1 = _a.sent();
                     core.setFailed(error_1.message);
-                    return [3 /*break*/, 8];
-                case 8: return [2 /*return*/];
+                    return [3 /*break*/, 7];
+                case 7: return [2 /*return*/];
             }
         });
     });
@@ -441,20 +437,20 @@ function setupRunEnv() {
                     packageLock = path.join(workingDirectory, 'package-lock.json');
                     isNPMrepo = (0, fs_1.existsSync)(packageLock);
                     if (!isYarnRepo) return [3 /*break*/, 3];
-                    return [4 /*yield*/, cli.exec('yarn', ['add', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.4', '--dev'])];
+                    return [4 /*yield*/, cli.exec('yarn', ['add', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.5', '--dev'])];
                 case 2:
                     _a.sent();
                     return [3 /*break*/, 8];
                 case 3:
                     if (!isNPMrepo) return [3 /*break*/, 5];
-                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.4', '--save-dev'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.5', '--save-dev'])];
                 case 4:
                     _a.sent();
                     return [3 /*break*/, 8];
                 case 5: return [4 /*yield*/, cli.exec('npm', ['init', '-y'])];
                 case 6:
                     _a.sent();
-                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.4', '--save-dev'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.5', '--save-dev'])];
                 case 7:
                     _a.sent();
                     _a.label = 8;
