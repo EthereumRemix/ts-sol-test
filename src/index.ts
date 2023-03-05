@@ -167,7 +167,7 @@ async function compileContract (contractPath: string, settings: CompileSettings)
           if (contractPath.endsWith('.sol')) {
             const split = contractPath.split('/')
 
-            artifactsPath = `${split.slice(0, split.length - 1).join('/')}/build-artifacts`
+            artifactsPath = `${split.slice(0, split.length - 2).join('/')}/build-artifacts`
           } else {
             artifactsPath = `${path.dirname(contractPath)}/build-artifacts`
           }

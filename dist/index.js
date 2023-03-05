@@ -346,7 +346,7 @@ function compileContract(contractPath, settings) {
                                                 artifactsPath = '';
                                                 if (contractPath.endsWith('.sol')) {
                                                     split = contractPath.split('/');
-                                                    artifactsPath = "".concat(split.slice(0, split.length - 1).join('/'), "/build-artifacts");
+                                                    artifactsPath = "".concat(split.slice(0, split.length - 2).join('/'), "/build-artifacts");
                                                 }
                                                 else {
                                                     artifactsPath = "".concat(path.dirname(contractPath), "/build-artifacts");
