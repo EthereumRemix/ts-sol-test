@@ -285,7 +285,7 @@ function compileContract(contractPath, settings) {
                 case 0: return [4 /*yield*/, fs.readFile(contractPath, 'utf8')];
                 case 1:
                     contract = _b.sent();
-                    compilationTargets = (_a = {}, _a[contractPath.endsWith('.sol') ? path.dirname(contractPath) : contractPath] = { content: contract }, _a);
+                    compilationTargets = (_a = {}, _a[contractPath] = { content: contract }, _a);
                     remixCompiler = new remix_solidity_1.Compiler(function (url, cb) { return __awaiter(_this, void 0, void 0, function () {
                         var importContent, resolver, result, e_1;
                         return __generator(this, function (_a) {
@@ -337,13 +337,20 @@ function compileContract(contractPath, settings) {
                                     }, 1000);
                                 });
                                 remixCompiler.event.register('compilationFinished', function (success, data, source) { return __awaiter(_this, void 0, void 0, function () {
-                                    var contractName, artifactsPath;
+                                    var contractName, artifactsPath, split;
                                     return __generator(this, function (_a) {
                                         switch (_a.label) {
                                             case 0:
                                                 if (!success) return [3 /*break*/, 4];
                                                 contractName = path.basename(contractPath, '.sol');
-                                                artifactsPath = "".concat(path.dirname(contractPath), "/build-artifacts");
+                                                artifactsPath = '';
+                                                if (contractPath.endsWith('.sol')) {
+                                                    split = contractPath.split('/');
+                                                    artifactsPath = "".concat(split.slice(0, split.length - 1).join('/'), "/build-artifacts");
+                                                }
+                                                else {
+                                                    artifactsPath = "".concat(path.dirname(contractPath), "/build-artifacts");
+                                                }
                                                 if (!!(0, fs_1.existsSync)(artifactsPath)) return [3 /*break*/, 2];
                                                 return [4 /*yield*/, fs.mkdir(artifactsPath)];
                                             case 1:

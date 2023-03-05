@@ -121,7 +121,7 @@ async function execute () {
 // Compile single smart contract
 async function compileContract (contractPath: string, settings: CompileSettings): Promise<void> {
   const contract = await fs.readFile(contractPath, 'utf8')
-  const compilationTargets = { [contractPath.endsWith('.sol') ? path.dirname(contractPath) : contractPath]: { content: contract } }
+  const compilationTargets = { [contractPath]: { content: contract } }
   const remixCompiler = new RemixCompiler(async (url: string, cb: (error: string | null, result?: string) => void) => {
     try {
       if(await existsSync(url)) {
@@ -162,8 +162,15 @@ async function compileContract (contractPath: string, settings: CompileSettings)
       remixCompiler.event.register('compilationFinished', async (success: boolean, data: any, source: string) => {
         if (success) {
           const contractName = path.basename(contractPath, '.sol')
-          const artifactsPath = `${path.dirname(contractPath)}/build-artifacts`
+          let artifactsPath = ''
 
+          if (contractPath.endsWith('.sol')) {
+            const split = contractPath.split('/')
+
+            artifactsPath = `${split.slice(0, split.length - 1).join('/')}/build-artifacts`
+          } else {
+            artifactsPath = `${path.dirname(contractPath)}/build-artifacts`
+          }
           if (!existsSync(artifactsPath)) await fs.mkdir(artifactsPath)
           await fs.writeFile(`${artifactsPath}/${contractName}.json`, JSON.stringify(data, null, 2))
           clearInterval(intervalId)
