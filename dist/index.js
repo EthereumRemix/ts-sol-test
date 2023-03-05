@@ -116,7 +116,7 @@ function execute() {
                     compileSettings = {
                         optimize: optimize || false,
                         evmVersion: evmVersion || null,
-                        runs: parseInt(runs) || 0,
+                        runs: parseInt(runs),
                         version: compilerVersion || '0.8.4'
                     };
                     // load environment and depeondencies
@@ -440,20 +440,20 @@ function setupRunEnv() {
                     packageLock = path.join(workingDirectory, 'package-lock.json');
                     isNPMrepo = (0, fs_1.existsSync)(packageLock);
                     if (!isYarnRepo) return [3 /*break*/, 3];
-                    return [4 /*yield*/, cli.exec('yarn', ['add', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.0', '--dev'])];
+                    return [4 /*yield*/, cli.exec('yarn', ['add', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.1', '--dev'])];
                 case 2:
                     _a.sent();
                     return [3 /*break*/, 8];
                 case 3:
                     if (!isNPMrepo) return [3 /*break*/, 5];
-                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.0', '--save-dev'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.1', '--save-dev'])];
                 case 4:
                     _a.sent();
                     return [3 /*break*/, 8];
                 case 5: return [4 /*yield*/, cli.exec('npm', ['init', '-y'])];
                 case 6:
                     _a.sent();
-                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.0', '--save-dev'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.1', '--save-dev'])];
                 case 7:
                     _a.sent();
                     _a.label = 8;
