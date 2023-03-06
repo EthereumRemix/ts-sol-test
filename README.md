@@ -6,22 +6,32 @@ To know more about Remix IDE `Solidity Unit Testing`, visit [Remix IDE official 
 
 ### Example workflow: Sample
 ```
-  name: ts-sol-test
-  on: [push]
+name: sol-test-js
+on: [push]
 
-  jobs:
+jobs:
   run_sample_test_job:
-      runs-on: ubuntu-latest
-      name: A job to run mocha and chai tests for solidity on github actions CI
-      steps:
+    runs-on: ubuntu-latest
+    name: A job to run solidity tests in js
+    steps:
       - name: Checkout
-          uses: actions/checkout@v2
-      - name: Run SUT Action
-          uses: EthereumRemix/ts-sol-test@v1.2
-          with:
+        uses: actions/checkout@v2
+      - name: Run Default Test
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+        uses: EthereumRemix/ts-sol-test@v1.3
+        with:
           test-path: 'sample/tests'
           contract-path: 'sample/contracts'
           compiler-version: '0.8.7'
+      - name: Run Custom Fork Test
+        uses: EthereumRemix/ts-sol-test@v1.3
+        with:
+          test-path: 'sample/tests/custom/hardFork.test.ts'
+          contract-path: 'sample/contracts/custom/mainnet_ens.sol'
+          compiler-version: '0.8.17'
+          hard-fork: 'merge'
+          node-url: 'https://rpc.archivenode.io/e50zmkroshle2e2e50zm0044i7ao04ym'
 ```
 
 
