@@ -72,6 +72,13 @@ async function execute () {
 
   // Move remix dependencies to test folder and transpile test files. Then run tests.
   await core.group("Run tests", async () => {
+    let buildArtifactsPath = ''
+
+    if (contractPath.endsWith('.sol')) {
+      buildArtifactsPath = contractPath.split('/').slice(0, -1).join('/') + '/build-artifacts'
+    } else {
+      buildArtifactsPath = contractPath + '/build-artifacts'
+    }
     if (isTestPathDirectory) {
       const testFiles = await fs.readdir(testPath)
       const filesPaths = []
@@ -82,7 +89,7 @@ async function execute () {
           if ((await fs.stat(`${testPath}/${testFile}`)).isDirectory()) await transpileDirectory(`${testPath}/${testFile}`)
           else {
             if (testFile.endsWith('.ts') || testFile.endsWith('.js')) {
-              const filePath = await main(`${testPath}/${testFile}`, contractPath, providerConfig)
+              const filePath = await main(`${testPath}/${testFile}`, buildArtifactsPath, providerConfig)
 
               if (filePath) filesPaths.push(filePath)
             }
@@ -93,7 +100,7 @@ async function execute () {
         }
       }
     } else {
-      const filePath = await main(testPath, contractPath, providerConfig)
+      const filePath = await main(testPath, buildArtifactsPath, providerConfig)
 
       if (filePath) {
         const parentPath = testPath.split('/').slice(0, -1).join('/')
@@ -162,18 +169,8 @@ async function compileContract (contractPath: string, settings: CompileSettings)
       remixCompiler.event.register('compilationFinished', async (success: boolean, data: any, source: string) => {
         if (success) {
           const contractName = path.basename(contractPath, '.sol')
-          let artifactsPath = ''
+          const artifactsPath = `${path.dirname(contractPath)}/build-artifacts`
 
-          console.log('contractPath: ', contractPath)
-          if (contractPath.endsWith('.sol')) {
-            const split = contractPath.split('/')
-
-            console.log('split: ', split)
-            artifactsPath = `${split.slice(0, split.length - 1).join('/')}/build-artifacts`
-            console.log('artifactsPath: ', artifactsPath)
-          } else {
-            artifactsPath = `${path.dirname(contractPath)}/build-artifacts`
-          }
           if (!existsSync(artifactsPath)) await fs.mkdir(artifactsPath)
           await fs.writeFile(`${artifactsPath}/${contractName}.json`, JSON.stringify(data, null, 2))
           clearInterval(intervalId)
@@ -190,7 +187,7 @@ async function compileContract (contractPath: string, settings: CompileSettings)
 }
 
 // Transpile and execute test files
-async function main (filePath: string, contractPath: string, providerConfig: { hardFork: string, nodeUrl: string, blockNumber: number | string }): Promise<string | undefined> {
+async function main (filePath: string, buildArtifactsPath: string, providerConfig: { hardFork: string, nodeUrl: string, blockNumber: number | string }): Promise<string | undefined> {
   try {
     // TODO: replace regex globally
     let testFileContent = await fs.readFile(filePath, 'utf8')
@@ -203,7 +200,7 @@ async function main (filePath: string, contractPath: string, providerConfig: { h
     const chaiImportIndex = testFileContent.search(chaiImportRegex)
     const chaiRequireIndex = testFileContent.search(chaiRequireRegex)
     
-    testFileContent = `global.remixContractArtifactsPath = "${contractPath}/build-artifacts";\nglobal.fork = "${providerConfig.hardFork}";\nglobal.nodeUrl = "${providerConfig.nodeUrl}";\nglobal.blockNumber = "${providerConfig.blockNumber}";\n${testFileContent}`
+    testFileContent = `global.remixContractArtifactsPath = "${buildArtifactsPath}";\nglobal.fork = "${providerConfig.hardFork}";\nglobal.nodeUrl = "${providerConfig.nodeUrl}";\nglobal.blockNumber = "${providerConfig.blockNumber}";\n${testFileContent}`
     if (hardhatImportIndex > -1) testFileContent = testFileContent.replace(hardhatEthersImportRegex, 'from \'@remix-project/ghaction-helper\'')
     if (hardhatRequireIndex > -1) testFileContent = testFileContent.replace(hardhatEthersRequireRegex, 'require(\'@remix-project/ghaction-helper\')')
     if (chaiImportIndex) testFileContent = testFileContent.replace(chaiImportRegex, 'from \'@remix-project/ghaction-helper\'')

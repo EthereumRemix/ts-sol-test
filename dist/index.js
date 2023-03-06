@@ -182,10 +182,17 @@ function execute() {
                     _a.sent();
                     // Move remix dependencies to test folder and transpile test files. Then run tests.
                     return [4 /*yield*/, core.group("Run tests", function () { return __awaiter(_this, void 0, void 0, function () {
-                            var testFiles, filesPaths, _i, testFiles_1, testFile, filePath, filePath, parentPath, folderFiles, _a, folderFiles_1, file, depPath, testFileContent, testFile;
+                            var buildArtifactsPath, testFiles, filesPaths, _i, testFiles_1, testFile, filePath, filePath, parentPath, folderFiles, _a, folderFiles_1, file, depPath, testFileContent, testFile;
                             return __generator(this, function (_b) {
                                 switch (_b.label) {
                                     case 0:
+                                        buildArtifactsPath = '';
+                                        if (contractPath.endsWith('.sol')) {
+                                            buildArtifactsPath = contractPath.split('/').slice(0, -1).join('/') + '/build-artifacts';
+                                        }
+                                        else {
+                                            buildArtifactsPath = contractPath + '/build-artifacts';
+                                        }
                                         if (!isTestPathDirectory) return [3 /*break*/, 11];
                                         return [4 /*yield*/, fs.readdir(testPath)];
                                     case 1:
@@ -206,7 +213,7 @@ function execute() {
                                         return [3 /*break*/, 7];
                                     case 5:
                                         if (!(testFile.endsWith('.ts') || testFile.endsWith('.js'))) return [3 /*break*/, 7];
-                                        return [4 /*yield*/, main("".concat(testPath, "/").concat(testFile), contractPath, providerConfig)];
+                                        return [4 /*yield*/, main("".concat(testPath, "/").concat(testFile), buildArtifactsPath, providerConfig)];
                                     case 6:
                                         filePath = _b.sent();
                                         if (filePath)
@@ -222,7 +229,7 @@ function execute() {
                                         _b.sent();
                                         _b.label = 10;
                                     case 10: return [3 /*break*/, 23];
-                                    case 11: return [4 /*yield*/, main(testPath, contractPath, providerConfig)];
+                                    case 11: return [4 /*yield*/, main(testPath, buildArtifactsPath, providerConfig)];
                                     case 12:
                                         filePath = _b.sent();
                                         if (!filePath) return [3 /*break*/, 23];
@@ -337,23 +344,13 @@ function compileContract(contractPath, settings) {
                                     }, 1000);
                                 });
                                 remixCompiler.event.register('compilationFinished', function (success, data, source) { return __awaiter(_this, void 0, void 0, function () {
-                                    var contractName, artifactsPath, split;
+                                    var contractName, artifactsPath;
                                     return __generator(this, function (_a) {
                                         switch (_a.label) {
                                             case 0:
                                                 if (!success) return [3 /*break*/, 4];
                                                 contractName = path.basename(contractPath, '.sol');
-                                                artifactsPath = '';
-                                                console.log('contractPath: ', contractPath);
-                                                if (contractPath.endsWith('.sol')) {
-                                                    split = contractPath.split('/');
-                                                    console.log('split: ', split);
-                                                    artifactsPath = "".concat(split.slice(0, split.length - 1).join('/'), "/build-artifacts");
-                                                    console.log('artifactsPath: ', artifactsPath);
-                                                }
-                                                else {
-                                                    artifactsPath = "".concat(path.dirname(contractPath), "/build-artifacts");
-                                                }
+                                                artifactsPath = "".concat(path.dirname(contractPath), "/build-artifacts");
                                                 if (!!(0, fs_1.existsSync)(artifactsPath)) return [3 /*break*/, 2];
                                                 return [4 /*yield*/, fs.mkdir(artifactsPath)];
                                             case 1:
@@ -381,7 +378,7 @@ function compileContract(contractPath, settings) {
     });
 }
 // Transpile and execute test files
-function main(filePath, contractPath, providerConfig) {
+function main(filePath, buildArtifactsPath, providerConfig) {
     return __awaiter(this, void 0, void 0, function () {
         var testFileContent, hardhatEthersImportRegex, hardhatEthersRequireRegex, chaiImportRegex, chaiRequireRegex, hardhatImportIndex, hardhatRequireIndex, chaiImportIndex, chaiRequireIndex, testFile, error_1;
         return __generator(this, function (_a) {
@@ -399,7 +396,7 @@ function main(filePath, contractPath, providerConfig) {
                     hardhatRequireIndex = testFileContent.search(hardhatEthersRequireRegex);
                     chaiImportIndex = testFileContent.search(chaiImportRegex);
                     chaiRequireIndex = testFileContent.search(chaiRequireRegex);
-                    testFileContent = "global.remixContractArtifactsPath = \"".concat(contractPath, "/build-artifacts\";\nglobal.fork = \"").concat(providerConfig.hardFork, "\";\nglobal.nodeUrl = \"").concat(providerConfig.nodeUrl, "\";\nglobal.blockNumber = \"").concat(providerConfig.blockNumber, "\";\n").concat(testFileContent);
+                    testFileContent = "global.remixContractArtifactsPath = \"".concat(buildArtifactsPath, "\";\nglobal.fork = \"").concat(providerConfig.hardFork, "\";\nglobal.nodeUrl = \"").concat(providerConfig.nodeUrl, "\";\nglobal.blockNumber = \"").concat(providerConfig.blockNumber, "\";\n").concat(testFileContent);
                     if (hardhatImportIndex > -1)
                         testFileContent = testFileContent.replace(hardhatEthersImportRegex, 'from \'@remix-project/ghaction-helper\'');
                     if (hardhatRequireIndex > -1)
