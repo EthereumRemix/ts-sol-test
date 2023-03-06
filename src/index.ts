@@ -24,12 +24,25 @@ async function execute () {
   contractPath = path.resolve(contractPath)
   testPath = path.resolve(testPath)
   const compilerVersion = core.getInput('compiler-version')
+  const evmVersion = core.getInput('evm-version') as EVMVersion
+  const runs = core.getInput('optimizer-runs')
+  const optimize = core.getBooleanInput('optimize')
+  const hardFork = core.getInput('hard-fork')
+  const nodeUrl = core.getInput('node-url')
+  const blockNumber = core.getInput('block-number')
+
+  const providerConfig = { 
+    nodeUrl,
+    blockNumber: isNaN(parseInt(blockNumber)) ? 'latest' : parseInt(blockNumber),
+    hardFork
+  }
+
   const isTestPathDirectory = (await fs.stat(testPath)).isDirectory()
   const isContractPathDirectory = (await fs.stat(contractPath)).isDirectory()
   const compileSettings = {
-    optimize: true,
-    evmVersion: null,
-    runs: 200,
+    optimize: optimize || false,
+    evmVersion: evmVersion || null,
+    runs: parseInt(runs),
     version: compilerVersion || '0.8.4'
   }
 
@@ -59,6 +72,13 @@ async function execute () {
 
   // Move remix dependencies to test folder and transpile test files. Then run tests.
   await core.group("Run tests", async () => {
+    let buildArtifactsPath = ''
+
+    if (contractPath.endsWith('.sol')) {
+      buildArtifactsPath = contractPath.split('/').slice(0, -1).join('/') + '/build-artifacts'
+    } else {
+      buildArtifactsPath = contractPath + '/build-artifacts'
+    }
     if (isTestPathDirectory) {
       const testFiles = await fs.readdir(testPath)
       const filesPaths = []
@@ -69,7 +89,7 @@ async function execute () {
           if ((await fs.stat(`${testPath}/${testFile}`)).isDirectory()) await transpileDirectory(`${testPath}/${testFile}`)
           else {
             if (testFile.endsWith('.ts') || testFile.endsWith('.js')) {
-              const filePath = await main(`${testPath}/${testFile}`, contractPath)
+              const filePath = await main(`${testPath}/${testFile}`, buildArtifactsPath, providerConfig)
 
               if (filePath) filesPaths.push(filePath)
             }
@@ -80,7 +100,7 @@ async function execute () {
         }
       }
     } else {
-      const filePath = await main(testPath, contractPath)
+      const filePath = await main(testPath, buildArtifactsPath, providerConfig)
 
       if (filePath) {
         const parentPath = testPath.split('/').slice(0, -1).join('/')
@@ -167,7 +187,7 @@ async function compileContract (contractPath: string, settings: CompileSettings)
 }
 
 // Transpile and execute test files
-async function main (filePath: string, contractPath: string): Promise<string | undefined> {
+async function main (filePath: string, buildArtifactsPath: string, providerConfig: { hardFork: string, nodeUrl: string, blockNumber: number | string }): Promise<string | undefined> {
   try {
     // TODO: replace regex globally
     let testFileContent = await fs.readFile(filePath, 'utf8')
@@ -179,26 +199,21 @@ async function main (filePath: string, contractPath: string): Promise<string | u
     const hardhatRequireIndex = testFileContent.search(hardhatEthersRequireRegex)
     const chaiImportIndex = testFileContent.search(chaiImportRegex)
     const chaiRequireIndex = testFileContent.search(chaiRequireRegex)
-    const describeIndex = testFileContent.search(/describe\s*\(/)
     
-    if (describeIndex === -1) {
-      throw new Error(`No describe function found in ${filePath}. Please wrap your tests in a describe function.`)
-    } else {
-      testFileContent = `${testFileContent.slice(0, describeIndex)}\nglobal.remixContractArtifactsPath = "${contractPath}/build-artifacts"; \n${testFileContent.slice(describeIndex)}`
-      if (hardhatImportIndex > -1) testFileContent = testFileContent.replace(hardhatEthersImportRegex, 'from \'@remix-project/ghaction-helper\'')
-      if (hardhatRequireIndex > -1) testFileContent = testFileContent.replace(hardhatEthersRequireRegex, 'require(\'@remix-project/ghaction-helper\')')
-      if (chaiImportIndex) testFileContent = testFileContent.replace(chaiImportRegex, 'from \'@remix-project/ghaction-helper\'')
-      if (chaiRequireIndex) testFileContent = testFileContent.replace(chaiRequireRegex, 'require(\'@remix-project/ghaction-helper\')')
-      if (filePath.endsWith('.ts')) {
-        const testFile = transpileScript(testFileContent)
+    testFileContent = `global.remixContractArtifactsPath = "${buildArtifactsPath}";\nglobal.fork = "${providerConfig.hardFork}";\nglobal.nodeUrl = "${providerConfig.nodeUrl}";\nglobal.blockNumber = "${providerConfig.blockNumber}";\n${testFileContent}`
+    if (hardhatImportIndex > -1) testFileContent = testFileContent.replace(hardhatEthersImportRegex, 'from \'@remix-project/ghaction-helper\'')
+    if (hardhatRequireIndex > -1) testFileContent = testFileContent.replace(hardhatEthersRequireRegex, 'require(\'@remix-project/ghaction-helper\')')
+    if (chaiImportIndex) testFileContent = testFileContent.replace(chaiImportRegex, 'from \'@remix-project/ghaction-helper\'')
+    if (chaiRequireIndex) testFileContent = testFileContent.replace(chaiRequireRegex, 'require(\'@remix-project/ghaction-helper\')')
+    if (filePath.endsWith('.ts')) {
+      const testFile = transpileScript(testFileContent)
 
-        filePath = filePath.replace('.ts', '.js')
-        await fs.writeFile(filePath, testFile.outputText)
-        return filePath
-      } else if (filePath.endsWith('.js')) {
-        await fs.writeFile(filePath, testFileContent)
-        return filePath
-      }
+      filePath = filePath.replace('.ts', '.js')
+      await fs.writeFile(filePath, testFile.outputText)
+      return filePath
+    } else if (filePath.endsWith('.js')) {
+      await fs.writeFile(filePath, testFileContent)
+      return filePath
     }
   } catch (error: any) {
     core.setFailed(error.message)
@@ -214,21 +229,21 @@ async function setupRunEnv (): Promise<void> {
   const isNPMrepo = existsSync(packageLock)
 
   if (isYarnRepo) {
-    await cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper', '--dev'])
+    await cli.exec('yarn', ['add', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.5', '--dev'])
   } else if (isNPMrepo) {
-    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper', '--save-dev', '--legacy-peer-deps'])
+    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.5', '--save-dev'])
   } else {
     await cli.exec('npm', ['init', '-y'])
-    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper', '--save-dev', '--legacy-peer-deps'])
+    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.5', '--save-dev'])
   }
 }
 
 // Run tests
 async function runTest (filePath: string | string[]): Promise<void> {
   if (Array.isArray(filePath)) {
-      await cli.exec('npx', ['mocha', ...filePath, '--timeout', '60000'])
+      await cli.exec('npx', ['mocha', ...filePath, '--timeout', '15000'])
   } else {
-      await cli.exec('npx', ['mocha', filePath, '--timeout', '60000'])
+      await cli.exec('npx', ['mocha', filePath, '--timeout', '15000'])
   }
 }
 

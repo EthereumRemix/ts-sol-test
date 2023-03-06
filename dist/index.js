@@ -82,7 +82,7 @@ var remix_url_resolver_1 = require("@remix-project/remix-url-resolver");
 var axios_1 = __importDefault(require("axios"));
 function execute() {
     return __awaiter(this, void 0, void 0, function () {
-        var testPath, contractPath, compilerVersion, isTestPathDirectory, isContractPathDirectory, compileSettings;
+        var testPath, contractPath, compilerVersion, evmVersion, runs, optimize, hardFork, nodeUrl, blockNumber, providerConfig, isTestPathDirectory, isContractPathDirectory, compileSettings;
         var _this = this;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -96,6 +96,17 @@ function execute() {
                     contractPath = path.resolve(contractPath);
                     testPath = path.resolve(testPath);
                     compilerVersion = core.getInput('compiler-version');
+                    evmVersion = core.getInput('evm-version');
+                    runs = core.getInput('optimizer-runs');
+                    optimize = core.getBooleanInput('optimize');
+                    hardFork = core.getInput('hard-fork');
+                    nodeUrl = core.getInput('node-url');
+                    blockNumber = core.getInput('block-number');
+                    providerConfig = {
+                        nodeUrl: nodeUrl,
+                        blockNumber: isNaN(parseInt(blockNumber)) ? 'latest' : parseInt(blockNumber),
+                        hardFork: hardFork
+                    };
                     return [4 /*yield*/, fs.stat(testPath)];
                 case 1:
                     isTestPathDirectory = (_a.sent()).isDirectory();
@@ -103,9 +114,9 @@ function execute() {
                 case 2:
                     isContractPathDirectory = (_a.sent()).isDirectory();
                     compileSettings = {
-                        optimize: true,
-                        evmVersion: null,
-                        runs: 200,
+                        optimize: optimize || false,
+                        evmVersion: evmVersion || null,
+                        runs: parseInt(runs),
                         version: compilerVersion || '0.8.4'
                     };
                     // load environment and depeondencies
@@ -171,10 +182,17 @@ function execute() {
                     _a.sent();
                     // Move remix dependencies to test folder and transpile test files. Then run tests.
                     return [4 /*yield*/, core.group("Run tests", function () { return __awaiter(_this, void 0, void 0, function () {
-                            var testFiles, filesPaths, _i, testFiles_1, testFile, filePath, filePath, parentPath, folderFiles, _a, folderFiles_1, file, depPath, testFileContent, testFile;
+                            var buildArtifactsPath, testFiles, filesPaths, _i, testFiles_1, testFile, filePath, filePath, parentPath, folderFiles, _a, folderFiles_1, file, depPath, testFileContent, testFile;
                             return __generator(this, function (_b) {
                                 switch (_b.label) {
                                     case 0:
+                                        buildArtifactsPath = '';
+                                        if (contractPath.endsWith('.sol')) {
+                                            buildArtifactsPath = contractPath.split('/').slice(0, -1).join('/') + '/build-artifacts';
+                                        }
+                                        else {
+                                            buildArtifactsPath = contractPath + '/build-artifacts';
+                                        }
                                         if (!isTestPathDirectory) return [3 /*break*/, 11];
                                         return [4 /*yield*/, fs.readdir(testPath)];
                                     case 1:
@@ -195,7 +213,7 @@ function execute() {
                                         return [3 /*break*/, 7];
                                     case 5:
                                         if (!(testFile.endsWith('.ts') || testFile.endsWith('.js'))) return [3 /*break*/, 7];
-                                        return [4 /*yield*/, main("".concat(testPath, "/").concat(testFile), contractPath)];
+                                        return [4 /*yield*/, main("".concat(testPath, "/").concat(testFile), buildArtifactsPath, providerConfig)];
                                     case 6:
                                         filePath = _b.sent();
                                         if (filePath)
@@ -211,7 +229,7 @@ function execute() {
                                         _b.sent();
                                         _b.label = 10;
                                     case 10: return [3 /*break*/, 23];
-                                    case 11: return [4 /*yield*/, main(testPath, contractPath)];
+                                    case 11: return [4 /*yield*/, main(testPath, buildArtifactsPath, providerConfig)];
                                     case 12:
                                         filePath = _b.sent();
                                         if (!filePath) return [3 /*break*/, 23];
@@ -360,13 +378,13 @@ function compileContract(contractPath, settings) {
     });
 }
 // Transpile and execute test files
-function main(filePath, contractPath) {
+function main(filePath, buildArtifactsPath, providerConfig) {
     return __awaiter(this, void 0, void 0, function () {
-        var testFileContent, hardhatEthersImportRegex, hardhatEthersRequireRegex, chaiImportRegex, chaiRequireRegex, hardhatImportIndex, hardhatRequireIndex, chaiImportIndex, chaiRequireIndex, describeIndex, testFile, error_1;
+        var testFileContent, hardhatEthersImportRegex, hardhatEthersRequireRegex, chaiImportRegex, chaiRequireRegex, hardhatImportIndex, hardhatRequireIndex, chaiImportIndex, chaiRequireIndex, testFile, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 7, , 8]);
+                    _a.trys.push([0, 6, , 7]);
                     return [4 /*yield*/, fs.readFile(filePath, 'utf8')];
                 case 1:
                     testFileContent = _a.sent();
@@ -378,11 +396,7 @@ function main(filePath, contractPath) {
                     hardhatRequireIndex = testFileContent.search(hardhatEthersRequireRegex);
                     chaiImportIndex = testFileContent.search(chaiImportRegex);
                     chaiRequireIndex = testFileContent.search(chaiRequireRegex);
-                    describeIndex = testFileContent.search(/describe\s*\(/);
-                    if (!(describeIndex === -1)) return [3 /*break*/, 2];
-                    throw new Error("No describe function found in ".concat(filePath, ". Please wrap your tests in a describe function."));
-                case 2:
-                    testFileContent = "".concat(testFileContent.slice(0, describeIndex), "\nglobal.remixContractArtifactsPath = \"").concat(contractPath, "/build-artifacts\"; \n").concat(testFileContent.slice(describeIndex));
+                    testFileContent = "global.remixContractArtifactsPath = \"".concat(buildArtifactsPath, "\";\nglobal.fork = \"").concat(providerConfig.hardFork, "\";\nglobal.nodeUrl = \"").concat(providerConfig.nodeUrl, "\";\nglobal.blockNumber = \"").concat(providerConfig.blockNumber, "\";\n").concat(testFileContent);
                     if (hardhatImportIndex > -1)
                         testFileContent = testFileContent.replace(hardhatEthersImportRegex, 'from \'@remix-project/ghaction-helper\'');
                     if (hardhatRequireIndex > -1)
@@ -391,25 +405,25 @@ function main(filePath, contractPath) {
                         testFileContent = testFileContent.replace(chaiImportRegex, 'from \'@remix-project/ghaction-helper\'');
                     if (chaiRequireIndex)
                         testFileContent = testFileContent.replace(chaiRequireRegex, 'require(\'@remix-project/ghaction-helper\')');
-                    if (!filePath.endsWith('.ts')) return [3 /*break*/, 4];
+                    if (!filePath.endsWith('.ts')) return [3 /*break*/, 3];
                     testFile = transpileScript(testFileContent);
                     filePath = filePath.replace('.ts', '.js');
                     return [4 /*yield*/, fs.writeFile(filePath, testFile.outputText)];
+                case 2:
+                    _a.sent();
+                    return [2 /*return*/, filePath];
                 case 3:
-                    _a.sent();
-                    return [2 /*return*/, filePath];
-                case 4:
-                    if (!filePath.endsWith('.js')) return [3 /*break*/, 6];
+                    if (!filePath.endsWith('.js')) return [3 /*break*/, 5];
                     return [4 /*yield*/, fs.writeFile(filePath, testFileContent)];
-                case 5:
+                case 4:
                     _a.sent();
                     return [2 /*return*/, filePath];
-                case 6: return [3 /*break*/, 8];
-                case 7:
+                case 5: return [3 /*break*/, 7];
+                case 6:
                     error_1 = _a.sent();
                     core.setFailed(error_1.message);
-                    return [3 /*break*/, 8];
-                case 8: return [2 /*return*/];
+                    return [3 /*break*/, 7];
+                case 7: return [2 /*return*/];
             }
         });
     });
@@ -429,20 +443,20 @@ function setupRunEnv() {
                     packageLock = path.join(workingDirectory, 'package-lock.json');
                     isNPMrepo = (0, fs_1.existsSync)(packageLock);
                     if (!isYarnRepo) return [3 /*break*/, 3];
-                    return [4 /*yield*/, cli.exec('yarn', ['add', 'mocha', '@remix-project/ghaction-helper', '--dev'])];
+                    return [4 /*yield*/, cli.exec('yarn', ['add', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.5', '--dev'])];
                 case 2:
                     _a.sent();
                     return [3 /*break*/, 8];
                 case 3:
                     if (!isNPMrepo) return [3 /*break*/, 5];
-                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper', '--save-dev', '--legacy-peer-deps'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.5', '--save-dev'])];
                 case 4:
                     _a.sent();
                     return [3 /*break*/, 8];
                 case 5: return [4 /*yield*/, cli.exec('npm', ['init', '-y'])];
                 case 6:
                     _a.sent();
-                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper', '--save-dev', '--legacy-peer-deps'])];
+                    return [4 /*yield*/, cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.5', '--save-dev'])];
                 case 7:
                     _a.sent();
                     _a.label = 8;
@@ -458,11 +472,11 @@ function runTest(filePath) {
             switch (_a.label) {
                 case 0:
                     if (!Array.isArray(filePath)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, cli.exec('npx', __spreadArray(__spreadArray(['mocha'], filePath, true), ['--timeout', '60000'], false))];
+                    return [4 /*yield*/, cli.exec('npx', __spreadArray(__spreadArray(['mocha'], filePath, true), ['--timeout', '15000'], false))];
                 case 1:
                     _a.sent();
                     return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, cli.exec('npx', ['mocha', filePath, '--timeout', '60000'])];
+                case 2: return [4 /*yield*/, cli.exec('npx', ['mocha', filePath, '--timeout', '15000'])];
                 case 3:
                     _a.sent();
                     _a.label = 4;
