@@ -11,17 +11,17 @@ jobs:
       - name: Run Default Test
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
-        uses: EthereumRemix/ts-sol-test@v1.3.50-dev
+        uses: EthereumRemix/ts-sol-test@v1.3.51-dev
         with:
           test-path: 'sample/tests'
           contract-path: 'sample/contracts'
           compiler-version: '0.8.7'
       - name: Run Custom Fork Test
-        uses: EthereumRemix/ts-sol-test@v1.3.50-dev
+        uses: EthereumRemix/ts-sol-test@v1.3.51-dev
         with:
           test-path: 'sample/tests/custom/hardFork.test.ts'
           contract-path: 'sample/contracts/custom/mainnet_ens.sol'
           compiler-version: '0.8.17'
           hard-fork: 'merge'
-          node-url: 'https://rpc.archivenode.io/e50zmkroshle2e2e50zm0044i7ao04ym'
+          node-url: 'https://mainnet.infura.io/v3/08b2a484451e4635a28b3d8234f24332'
 
