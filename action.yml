@@ -31,6 +31,10 @@ inputs:
   hard-fork:
     description: 'set hard fork (e.g: istanbul, berlin etc. See full list of hard forks here: https://github.com/ethereumjs/ethereumjs-monorepo/tree/master/packages/common/src/hardforks)'
     required: false
+  mocha-timeout:
+    description: 'set mocha timeout (e.g: 20000)'
+    required: false
+    default: '15000'
   
 outputs:
   time: # id of output

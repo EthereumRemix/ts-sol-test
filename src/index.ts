@@ -30,6 +30,7 @@ async function execute () {
   const hardFork = core.getInput('hard-fork')
   const nodeUrl = core.getInput('node-url')
   const blockNumber = core.getInput('block-number')
+  const mochaTimeout = core.getInput('mocha-timeout')
 
   const providerConfig = { 
     nodeUrl,
@@ -96,7 +97,7 @@ async function execute () {
           }
         }
         if (filesPaths.length > 0) {
-          await runTest(filesPaths)
+          await runTest(filesPaths, mochaTimeout)
         }
       }
     } else {
@@ -119,7 +120,7 @@ async function execute () {
             }
           }
         }
-        await runTest(filePath)
+        await runTest(filePath, mochaTimeout)
       }
     }
   })
@@ -239,11 +240,11 @@ async function setupRunEnv (): Promise<void> {
 }
 
 // Run tests
-async function runTest (filePath: string | string[]): Promise<void> {
+async function runTest (filePath: string | string[], timeout: string): Promise<void> {
   if (Array.isArray(filePath)) {
-      await cli.exec('npx', ['mocha', ...filePath, '--timeout', '15000'])
+      await cli.exec('npx', ['mocha', ...filePath, '--timeout', timeout])
   } else {
-      await cli.exec('npx', ['mocha', filePath, '--timeout', '15000'])
+      await cli.exec('npx', ['mocha', filePath, '--timeout', timeout])
   }
 }
 

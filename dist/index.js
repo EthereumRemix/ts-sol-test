@@ -82,7 +82,7 @@ var remix_url_resolver_1 = require("@remix-project/remix-url-resolver");
 var axios_1 = __importDefault(require("axios"));
 function execute() {
     return __awaiter(this, void 0, void 0, function () {
-        var testPath, contractPath, compilerVersion, evmVersion, runs, optimize, hardFork, nodeUrl, blockNumber, providerConfig, isTestPathDirectory, isContractPathDirectory, compileSettings;
+        var testPath, contractPath, compilerVersion, evmVersion, runs, optimize, hardFork, nodeUrl, blockNumber, mochaTimeout, providerConfig, isTestPathDirectory, isContractPathDirectory, compileSettings;
         var _this = this;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -102,6 +102,7 @@ function execute() {
                     hardFork = core.getInput('hard-fork');
                     nodeUrl = core.getInput('node-url');
                     blockNumber = core.getInput('block-number');
+                    mochaTimeout = core.getInput('mocha-timeout');
                     providerConfig = {
                         nodeUrl: nodeUrl,
                         blockNumber: isNaN(parseInt(blockNumber)) ? 'latest' : parseInt(blockNumber),
@@ -224,7 +225,7 @@ function execute() {
                                         return [3 /*break*/, 2];
                                     case 8:
                                         if (!(filesPaths.length > 0)) return [3 /*break*/, 10];
-                                        return [4 /*yield*/, runTest(filesPaths)];
+                                        return [4 /*yield*/, runTest(filesPaths, mochaTimeout)];
                                     case 9:
                                         _b.sent();
                                         _b.label = 10;
@@ -265,7 +266,7 @@ function execute() {
                                     case 20:
                                         _a++;
                                         return [3 /*break*/, 14];
-                                    case 21: return [4 /*yield*/, runTest(filePath)];
+                                    case 21: return [4 /*yield*/, runTest(filePath, mochaTimeout)];
                                     case 22:
                                         _b.sent();
                                         _b.label = 23;
@@ -466,17 +467,17 @@ function setupRunEnv() {
     });
 }
 // Run tests
-function runTest(filePath) {
+function runTest(filePath, timeout) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     if (!Array.isArray(filePath)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, cli.exec('npx', __spreadArray(__spreadArray(['mocha'], filePath, true), ['--timeout', '15000'], false))];
+                    return [4 /*yield*/, cli.exec('npx', __spreadArray(__spreadArray(['mocha'], filePath, true), ['--timeout', timeout], false))];
                 case 1:
                     _a.sent();
                     return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, cli.exec('npx', ['mocha', filePath, '--timeout', '15000'])];
+                case 2: return [4 /*yield*/, cli.exec('npx', ['mocha', filePath, '--timeout', timeout])];
                 case 3:
                     _a.sent();
                     _a.label = 4;
