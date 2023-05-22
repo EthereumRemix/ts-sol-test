@@ -15,6 +15,10 @@ interface CompileSettings {
   version: string
 }
 
+type JSONValues = {
+  [entry: string]: any
+}
+
 async function execute () {
   let testPath = core.getInput('test-path')
   let contractPath = core.getInput('contract-path')
@@ -136,7 +140,33 @@ async function compileContract (contractPath: string, settings: CompileSettings)
 
         cb(null, importContent)
       } else {
-        const resolver = new RemixURLResolver()
+        const resolver = new RemixURLResolver(async () => {
+          try {
+            let yarnLock = ''
+            try {
+              await fs.access('yarn.lock', fs.constants.F_OK)
+              yarnLock = await fs.readFile('yarn.lock', 'utf8')
+            } catch (e) {}
+              
+            let packageLock
+            try {
+              await fs.access('package-lock.json', fs.constants.F_OK)
+              packageLock = await fs.readFile('package-lock.json', 'utf8')
+              packageLock = JSON.parse(packageLock)
+            } catch (e) {}
+
+            try {
+              await fs.access('package.json', fs.constants.F_OK)
+              const content = await fs.readFile('package.json', 'utf8')
+              const pkg = JSON.parse(content)
+              packageLock = JSON.parse(packageLock)
+              return { deps: { ...(pkg['dependencies'] as JSONValues), ...(pkg['devDependencies'] as JSONValues) }, yarnLock, packageLock }
+            } catch (e) {}
+          } catch (e) {
+            console.error(e)
+          }
+          return {}
+        })
         const result = await resolver.resolve(url)
 
         cb(null, result.content)

@@ -1,6 +1,6 @@
 {
   "name": "@remix-project/remix-lib",
-  "version": "0.5.20",
+  "version": "0.5.32",
   "description": "Library to various Remix tools",
   "contributors": [
     {
@@ -13,15 +13,16 @@
     }
   ],
   "main": "src/index.js",
+  "scripts": {
+    "test": "./../../node_modules/.bin/ts-node --require tsconfig-paths/register ./../../node_modules/.bin/tape ./test/tests.ts"
+  },
   "dependencies": {
-    "@ethereumjs/block": "^3.5.1",
-    "@ethereumjs/tx": "^3.3.2",
-    "@ethereumjs/vm": "^5.5.3",
+    "@ethereumjs/util": "^8.0.5",
     "async": "^2.1.2",
-    "ethereumjs-util": "^7.0.10",
-    "ethers": "^4.0.40",
+    "ethers": "^5.7.2",
     "ethjs-util": "^0.1.6",
     "events": "^3.0.0",
+    "from-exponential": "1.1.1",
     "solc": "^0.7.4",
     "string-similarity": "^4.0.4",
     "web3": "^1.5.1"
@@ -37,9 +38,6 @@
     "babelify": "^10.0.0",
     "tape": "^4.6.0"
   },
-  "scripts": {
-    "test": "./../../node_modules/.bin/ts-node --require tsconfig-paths/register ./../../node_modules/.bin/tape ./test/tests.ts"
-  },
   "publishConfig": {
     "access": "public"
   },
@@ -54,5 +52,6 @@
   },
   "homepage": "https://github.com/ethereum/remix-project/tree/master/libs/remix-lib#readme",
   "typings": "src/index.d.ts",
-  "gitHead": "569f7d53f6f218d99aa8281929b541ab7e00058f"
+  "gitHead": "18a9b1f4e6ec1fc94d2a81d0157d72b742daf620",
+  "types": "./src/index.d.ts"
 }

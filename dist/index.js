@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -295,6 +306,7 @@ function compileContract(contractPath, settings) {
                     compilationTargets = (_a = {}, _a[contractPath] = { content: contract }, _a);
                     remixCompiler = new remix_solidity_1.Compiler(function (url, cb) { return __awaiter(_this, void 0, void 0, function () {
                         var importContent, resolver, result, e_1;
+                        var _this = this;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
@@ -308,7 +320,65 @@ function compileContract(contractPath, settings) {
                                     cb(null, importContent);
                                     return [3 /*break*/, 5];
                                 case 3:
-                                    resolver = new remix_url_resolver_1.RemixURLResolver();
+                                    resolver = new remix_url_resolver_1.RemixURLResolver(function () { return __awaiter(_this, void 0, void 0, function () {
+                                        var yarnLock, e_2, packageLock, e_3, content, pkg, e_4, e_5;
+                                        return __generator(this, function (_a) {
+                                            switch (_a.label) {
+                                                case 0:
+                                                    _a.trys.push([0, 15, , 16]);
+                                                    yarnLock = '';
+                                                    _a.label = 1;
+                                                case 1:
+                                                    _a.trys.push([1, 4, , 5]);
+                                                    return [4 /*yield*/, fs.access('yarn.lock', fs.constants.F_OK)];
+                                                case 2:
+                                                    _a.sent();
+                                                    return [4 /*yield*/, fs.readFile('yarn.lock', 'utf8')];
+                                                case 3:
+                                                    yarnLock = _a.sent();
+                                                    return [3 /*break*/, 5];
+                                                case 4:
+                                                    e_2 = _a.sent();
+                                                    return [3 /*break*/, 5];
+                                                case 5:
+                                                    packageLock = void 0;
+                                                    _a.label = 6;
+                                                case 6:
+                                                    _a.trys.push([6, 9, , 10]);
+                                                    return [4 /*yield*/, fs.access('package-lock.json', fs.constants.F_OK)];
+                                                case 7:
+                                                    _a.sent();
+                                                    return [4 /*yield*/, fs.readFile('package-lock.json', 'utf8')];
+                                                case 8:
+                                                    packageLock = _a.sent();
+                                                    packageLock = JSON.parse(packageLock);
+                                                    return [3 /*break*/, 10];
+                                                case 9:
+                                                    e_3 = _a.sent();
+                                                    return [3 /*break*/, 10];
+                                                case 10:
+                                                    _a.trys.push([10, 13, , 14]);
+                                                    return [4 /*yield*/, fs.access('package.json', fs.constants.F_OK)];
+                                                case 11:
+                                                    _a.sent();
+                                                    return [4 /*yield*/, fs.readFile('package.json', 'utf8')];
+                                                case 12:
+                                                    content = _a.sent();
+                                                    pkg = JSON.parse(content);
+                                                    packageLock = JSON.parse(packageLock);
+                                                    return [2 /*return*/, { deps: __assign(__assign({}, pkg['dependencies']), pkg['devDependencies']), yarnLock: yarnLock, packageLock: packageLock }];
+                                                case 13:
+                                                    e_4 = _a.sent();
+                                                    return [3 /*break*/, 14];
+                                                case 14: return [3 /*break*/, 16];
+                                                case 15:
+                                                    e_5 = _a.sent();
+                                                    console.error(e_5);
+                                                    return [3 /*break*/, 16];
+                                                case 16: return [2 /*return*/, {}];
+                                            }
+                                        });
+                                    }); });
                                     return [4 /*yield*/, resolver.resolve(url)];
                                 case 4:
                                     result = _a.sent();
