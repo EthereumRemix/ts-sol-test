@@ -133,42 +133,44 @@ async function execute () {
 async function compileContract (contractPath: string, settings: CompileSettings): Promise<void> {
   const contract = await fs.readFile(contractPath, 'utf8')
   const compilationTargets = { [contractPath]: { content: contract } }
+  const resolver = new RemixURLResolver(async () => {
+    try {
+      let yarnLock = ''
+      let pathRef = ''
+      try {
+        pathRef = path.resolve('yarn.lock')
+        await fs.access(pathRef)
+        yarnLock = await fs.readFile(pathRef, 'utf8')
+      } catch (e: any) {}
+        
+      let packageLock
+      try {
+        pathRef = path.resolve('package-lock.json')
+        await fs.access(pathRef)
+        packageLock = await fs.readFile(pathRef, 'utf8')
+        packageLock = JSON.parse(packageLock)
+      } catch (e: any) {}
+
+      try {
+        pathRef = path.resolve('package.json')
+        await fs.access(pathRef)
+        const content = await fs.readFile(pathRef, 'utf8')
+        const pkg = JSON.parse(content)
+        const ret = { deps: { ...(pkg['dependencies'] as JSONValues), ...(pkg['devDependencies'] as JSONValues) }, yarnLock, packageLock }        
+        return ret
+      } catch (e:  any) {}
+    } catch (e) {
+      console.error(e)
+    }
+    return {}
+  })
   const remixCompiler = new RemixCompiler(async (url: string, cb: (error: string | null, result?: string) => void) => {
     try {
       if(await existsSync(url)) {
         const importContent = await fs.readFile(url, 'utf8')
-
         cb(null, importContent)
-      } else {
-        const resolver = new RemixURLResolver(async () => {
-          try {
-            let yarnLock = ''
-            try {
-              await fs.access('yarn.lock', fs.constants.F_OK)
-              yarnLock = await fs.readFile('yarn.lock', 'utf8')
-            } catch (e) {}
-              
-            let packageLock
-            try {
-              await fs.access('package-lock.json', fs.constants.F_OK)
-              packageLock = await fs.readFile('package-lock.json', 'utf8')
-              packageLock = JSON.parse(packageLock)
-            } catch (e) {}
-
-            try {
-              await fs.access('package.json', fs.constants.F_OK)
-              const content = await fs.readFile('package.json', 'utf8')
-              const pkg = JSON.parse(content)
-              packageLock = JSON.parse(packageLock)
-              return { deps: { ...(pkg['dependencies'] as JSONValues), ...(pkg['devDependencies'] as JSONValues) }, yarnLock, packageLock }
-            } catch (e) {}
-          } catch (e) {
-            console.error(e)
-          }
-          return {}
-        })
+      } else {        
         const result = await resolver.resolve(url)
-
         cb(null, result.content)
       }
     } catch (e: any) {
@@ -207,6 +209,7 @@ async function compileContract (contractPath: string, settings: CompileSettings)
           return resolve()
         } else {
           clearInterval(intervalId)
+          core.setFailed(data)
           throw new Error('Compilation failed')
         }
       })
