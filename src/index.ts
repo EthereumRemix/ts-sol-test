@@ -177,6 +177,7 @@ async function compileContract (contractPath: string, settings: CompileSettings)
           return resolve()
         } else {
           clearInterval(intervalId)
+          core.setFailed(JSON.stringify(data))
           throw new Error('Compilation failed')
         }
       })
