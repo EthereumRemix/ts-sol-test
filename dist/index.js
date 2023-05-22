@@ -363,6 +363,7 @@ function compileContract(contractPath, settings) {
                                                 return [2 /*return*/, resolve()];
                                             case 4:
                                                 clearInterval(intervalId);
+                                                core.setFailed(JSON.stringify(data))
                                                 throw new Error('Compilation failed');
                                         }
                                     });
