@@ -15,6 +15,10 @@ interface CompileSettings {
   version: string
 }
 
+type JSONValues = {
+  [entry: string]: any
+}
+
 async function execute () {
   let testPath = core.getInput('test-path')
   let contractPath = core.getInput('contract-path')
@@ -129,16 +133,44 @@ async function execute () {
 async function compileContract (contractPath: string, settings: CompileSettings): Promise<void> {
   const contract = await fs.readFile(contractPath, 'utf8')
   const compilationTargets = { [contractPath]: { content: contract } }
+  const resolver = new RemixURLResolver(async () => {
+    try {
+      let yarnLock = ''
+      let pathRef = ''
+      try {
+        pathRef = path.resolve('yarn.lock')
+        await fs.access(pathRef)
+        yarnLock = await fs.readFile(pathRef, 'utf8')
+      } catch (e: any) {}
+        
+      let packageLock
+      try {
+        pathRef = path.resolve('package-lock.json')
+        await fs.access(pathRef)
+        packageLock = await fs.readFile(pathRef, 'utf8')
+        packageLock = JSON.parse(packageLock)
+      } catch (e: any) {}
+
+      try {
+        pathRef = path.resolve('package.json')
+        await fs.access(pathRef)
+        const content = await fs.readFile(pathRef, 'utf8')
+        const pkg = JSON.parse(content)
+        const ret = { deps: { ...(pkg['dependencies'] as JSONValues), ...(pkg['devDependencies'] as JSONValues) }, yarnLock, packageLock }        
+        return ret
+      } catch (e:  any) {}
+    } catch (e) {
+      console.error(e)
+    }
+    return {}
+  })
   const remixCompiler = new RemixCompiler(async (url: string, cb: (error: string | null, result?: string) => void) => {
     try {
       if(await existsSync(url)) {
         const importContent = await fs.readFile(url, 'utf8')
-
         cb(null, importContent)
-      } else {
-        const resolver = new RemixURLResolver()
+      } else {        
         const result = await resolver.resolve(url)
-
         cb(null, result.content)
       }
     } catch (e: any) {
