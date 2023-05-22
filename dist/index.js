@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -284,7 +295,7 @@ function execute() {
 // Compile single smart contract
 function compileContract(contractPath, settings) {
     return __awaiter(this, void 0, void 0, function () {
-        var contract, compilationTargets, remixCompiler, compilerList, releases, compilerUrl_1;
+        var contract, compilationTargets, resolver, remixCompiler, compilerList, releases, compilerUrl_1;
         var _a;
         var _this = this;
         return __generator(this, function (_b) {
@@ -293,8 +304,71 @@ function compileContract(contractPath, settings) {
                 case 1:
                     contract = _b.sent();
                     compilationTargets = (_a = {}, _a[contractPath] = { content: contract }, _a);
+                    resolver = new remix_url_resolver_1.RemixURLResolver(function () { return __awaiter(_this, void 0, void 0, function () {
+                        var yarnLock, pathRef, e_1, packageLock, e_2, content, pkg, ret, e_3, e_4;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    _a.trys.push([0, 15, , 16]);
+                                    yarnLock = '';
+                                    pathRef = '';
+                                    _a.label = 1;
+                                case 1:
+                                    _a.trys.push([1, 4, , 5]);
+                                    pathRef = path.resolve('yarn.lock');
+                                    return [4 /*yield*/, fs.access(pathRef)];
+                                case 2:
+                                    _a.sent();
+                                    return [4 /*yield*/, fs.readFile(pathRef, 'utf8')];
+                                case 3:
+                                    yarnLock = _a.sent();
+                                    return [3 /*break*/, 5];
+                                case 4:
+                                    e_1 = _a.sent();
+                                    return [3 /*break*/, 5];
+                                case 5:
+                                    packageLock = void 0;
+                                    _a.label = 6;
+                                case 6:
+                                    _a.trys.push([6, 9, , 10]);
+                                    pathRef = path.resolve('package-lock.json');
+                                    return [4 /*yield*/, fs.access(pathRef)];
+                                case 7:
+                                    _a.sent();
+                                    return [4 /*yield*/, fs.readFile(pathRef, 'utf8')];
+                                case 8:
+                                    packageLock = _a.sent();
+                                    packageLock = JSON.parse(packageLock);
+                                    return [3 /*break*/, 10];
+                                case 9:
+                                    e_2 = _a.sent();
+                                    return [3 /*break*/, 10];
+                                case 10:
+                                    _a.trys.push([10, 13, , 14]);
+                                    pathRef = path.resolve('package.json');
+                                    return [4 /*yield*/, fs.access(pathRef)];
+                                case 11:
+                                    _a.sent();
+                                    return [4 /*yield*/, fs.readFile(pathRef, 'utf8')];
+                                case 12:
+                                    content = _a.sent();
+                                    pkg = JSON.parse(content);
+                                    ret = { deps: __assign(__assign({}, pkg['dependencies']), pkg['devDependencies']), yarnLock: yarnLock, packageLock: packageLock };
+                                    return [2 /*return*/, ret];
+                                case 13:
+                                    e_3 = _a.sent();
+                                    return [3 /*break*/, 14];
+                                case 14: return [3 /*break*/, 16];
+                                case 15:
+                                    e_4 = _a.sent();
+                                    console.error(e_4);
+                                    return [3 /*break*/, 16];
+                                case 16: return [2 /*return*/, {}];
+                            }
+                        });
+                    }); });
                     remixCompiler = new remix_solidity_1.Compiler(function (url, cb) { return __awaiter(_this, void 0, void 0, function () {
-                        var importContent, resolver, result, e_1;
+                        var importContent, result, e_5;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
@@ -307,17 +381,15 @@ function compileContract(contractPath, settings) {
                                     importContent = _a.sent();
                                     cb(null, importContent);
                                     return [3 /*break*/, 5];
-                                case 3:
-                                    resolver = new remix_url_resolver_1.RemixURLResolver();
-                                    return [4 /*yield*/, resolver.resolve(url)];
+                                case 3: return [4 /*yield*/, resolver.resolve(url)];
                                 case 4:
                                     result = _a.sent();
                                     cb(null, result.content);
                                     _a.label = 5;
                                 case 5: return [3 /*break*/, 7];
                                 case 6:
-                                    e_1 = _a.sent();
-                                    cb(e_1.message);
+                                    e_5 = _a.sent();
+                                    cb(e_5.message);
                                     return [3 /*break*/, 7];
                                 case 7: return [2 /*return*/];
                             }
@@ -363,7 +435,7 @@ function compileContract(contractPath, settings) {
                                                 return [2 /*return*/, resolve()];
                                             case 4:
                                                 clearInterval(intervalId);
-                                                core.setFailed(JSON.stringify(data))
+                                                core.setFailed(JSON.stringify(data));
                                                 throw new Error('Compilation failed');
                                         }
                                     });
