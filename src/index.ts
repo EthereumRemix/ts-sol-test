@@ -15,6 +15,10 @@ interface CompileSettings {
   version: string
 }
 
+type JSONValues = {
+  [entry: string]: any
+}
+
 async function execute () {
   let testPath = core.getInput('test-path')
   let contractPath = core.getInput('contract-path')
@@ -129,16 +133,44 @@ async function execute () {
 async function compileContract (contractPath: string, settings: CompileSettings): Promise<void> {
   const contract = await fs.readFile(contractPath, 'utf8')
   const compilationTargets = { [contractPath]: { content: contract } }
+  const resolver = new RemixURLResolver(async () => {
+    try {
+      let yarnLock = ''
+      let pathRef = ''
+      try {
+        pathRef = path.resolve('yarn.lock')
+        await fs.access(pathRef)
+        yarnLock = await fs.readFile(pathRef, 'utf8')
+      } catch (e: any) {}
+        
+      let packageLock
+      try {
+        pathRef = path.resolve('package-lock.json')
+        await fs.access(pathRef)
+        packageLock = await fs.readFile(pathRef, 'utf8')
+        packageLock = JSON.parse(packageLock)
+      } catch (e: any) {}
+
+      try {
+        pathRef = path.resolve('package.json')
+        await fs.access(pathRef)
+        const content = await fs.readFile(pathRef, 'utf8')
+        const pkg = JSON.parse(content)
+        const ret = { deps: { ...(pkg['dependencies'] as JSONValues), ...(pkg['devDependencies'] as JSONValues) }, yarnLock, packageLock }        
+        return ret
+      } catch (e:  any) {}
+    } catch (e) {
+      console.error(e)
+    }
+    return {}
+  })
   const remixCompiler = new RemixCompiler(async (url: string, cb: (error: string | null, result?: string) => void) => {
     try {
       if(await existsSync(url)) {
         const importContent = await fs.readFile(url, 'utf8')
-
         cb(null, importContent)
-      } else {
-        const resolver = new RemixURLResolver()
+      } else {        
         const result = await resolver.resolve(url)
-
         cb(null, result.content)
       }
     } catch (e: any) {
@@ -153,7 +185,7 @@ async function compileContract (contractPath: string, settings: CompileSettings)
 
     remixCompiler.set('evmVersion', settings.evmVersion)
     remixCompiler.set('optimize', settings.optimize)
-    remixCompiler.set('runs', 200)
+    remixCompiler.set('runs', settings.runs)
     return new Promise((resolve, reject) => {
       let intervalId: NodeJS.Timer
 
@@ -177,6 +209,7 @@ async function compileContract (contractPath: string, settings: CompileSettings)
           return resolve()
         } else {
           clearInterval(intervalId)
+          core.setFailed(data)
           throw new Error('Compilation failed')
         }
       })
@@ -229,12 +262,12 @@ async function setupRunEnv (): Promise<void> {
   const isNPMrepo = existsSync(packageLock)
 
   if (isYarnRepo) {
-    await cli.exec('yarn', ['add', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.5', '--dev'])
+    await cli.exec('yarn', ['add', 'tslib', 'mocha', '@remix-project/ghaction-helper', '--dev'])
   } else if (isNPMrepo) {
-    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.5', '--save-dev'])
+    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])
   } else {
     await cli.exec('npm', ['init', '-y'])
-    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper@0.1.7-alpha.5', '--save-dev'])
+    await cli.exec('npm', ['install', 'tslib', 'mocha', '@remix-project/ghaction-helper', '--save-dev'])
   }
 }
 
