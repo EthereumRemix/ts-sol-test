@@ -469,7 +469,7 @@ function main(filePath, buildArtifactsPath, providerConfig) {
                     hardhatRequireIndex = testFileContent.search(hardhatEthersRequireRegex);
                     chaiImportIndex = testFileContent.search(chaiImportRegex);
                     chaiRequireIndex = testFileContent.search(chaiRequireRegex);
-                    testFileContent = "global.remixContractArtifactsPath = \"".concat(buildArtifactsPath, "\";\nglobal.fork = \"").concat(providerConfig.hardFork, "\";\nglobal.nodeUrl = \"").concat(providerConfig.nodeUrl, "\";\nglobal.blockNumber = \"").concat(providerConfig.blockNumber, "\";\n").concat(testFileContent);
+                    testFileContent = "global.remixContractArtifactsPath = \"".concat(buildArtifactsPath, "\";\nglobal.fork = \"").concat(providerConfig.hardFork, "\";\nglobal.nodeUrl = \"").concat(providerConfig.nodeUrl, "\";\nglobal.blockNumber = ").concat(providerConfig.blockNumber === 'latest' ? '"' + providerConfig.blockNumber + '"' : providerConfig.blockNumber, ";\n").concat(testFileContent);
                     if (hardhatImportIndex > -1)
                         testFileContent = testFileContent.replace(hardhatEthersImportRegex, 'from \'@remix-project/ghaction-helper\'');
                     if (hardhatRequireIndex > -1)
