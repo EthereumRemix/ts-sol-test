@@ -233,7 +233,7 @@ async function main (filePath: string, buildArtifactsPath: string, providerConfi
     const chaiImportIndex = testFileContent.search(chaiImportRegex)
     const chaiRequireIndex = testFileContent.search(chaiRequireRegex)
     
-    testFileContent = `global.remixContractArtifactsPath = "${buildArtifactsPath}";\nglobal.fork = "${providerConfig.hardFork}";\nglobal.nodeUrl = "${providerConfig.nodeUrl}";\nglobal.blockNumber = "${providerConfig.blockNumber}";\n${testFileContent}`
+    testFileContent = `global.remixContractArtifactsPath = "${buildArtifactsPath}";\nglobal.fork = "${providerConfig.hardFork}";\nglobal.nodeUrl = "${providerConfig.nodeUrl}";\nglobal.blockNumber = ${typeof providerConfig.blockNumber === 'string' ? '"' + providerConfig.blockNumber + '"' : providerConfig.blockNumber};\n${testFileContent}`
     if (hardhatImportIndex > -1) testFileContent = testFileContent.replace(hardhatEthersImportRegex, 'from \'@remix-project/ghaction-helper\'')
     if (hardhatRequireIndex > -1) testFileContent = testFileContent.replace(hardhatEthersRequireRegex, 'require(\'@remix-project/ghaction-helper\')')
     if (chaiImportIndex) testFileContent = testFileContent.replace(chaiImportRegex, 'from \'@remix-project/ghaction-helper\'')
