@@ -19,13 +19,13 @@ jobs:
       - name: Run Default Test
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
-        uses: EthereumRemix/ts-sol-test@v1.3.1
+        uses: EthereumRemix/ts-sol-test@v1.4.0
         with:
           test-path: 'sample/tests'
           contract-path: 'sample/contracts'
           compiler-version: '0.8.7'
       - name: Run Custom Fork Test
-        uses: EthereumRemix/ts-sol-test@v1.3.1
+        uses: EthereumRemix/ts-sol-test@v1.4.0
         with:
           test-path: 'sample/tests/custom/hardFork.test.ts'
           contract-path: 'sample/contracts/custom/mainnet_ens.sol'
